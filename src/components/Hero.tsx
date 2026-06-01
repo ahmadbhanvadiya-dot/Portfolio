@@ -30,9 +30,9 @@ export default function Hero() {
           transition={{ duration: 0.6 }}
           className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight"
         >
-          I build{" "}
+          Turning Ideas{" "}
           <span className="bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text">
-            modern digital experiences
+            Into Real Products
           </span>
         </motion.h1>
 
@@ -43,8 +43,7 @@ export default function Hero() {
           transition={{ delay: 0.2 }}
           className="text-gray-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto"
         >
-          I’m a developer focused on building clean, fast, and scalable web applications
-          using modern technologies like Next.js, React, and Python.
+          Computer Science student passionate about building web applications, automation systems, and innovative products. I enjoy transforming ideas into practical solutions using Next.js, TypeScript, Python, and modern technologies.
         </motion.p>
 
         {/* buttons */}
