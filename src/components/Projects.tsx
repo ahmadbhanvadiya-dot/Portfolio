@@ -4,23 +4,24 @@ import { motion } from "framer-motion";
 
 export default function Projects() {
   const projects = [
-    {
-      title: "Medicine Dispensing System",
-      desc: "Automates medicine scheduling and dispensing with smart logic.",
-      tag: "IoT / Automation",
-    },
-    {
-      title: "QR Health Scanner",
-      desc: "QR-based system for fast medical data access and scanning.",
-      tag: "Full Stack",
-    },
-  ];
+  {
+    title: "Freshlify",
+    description:
+      "A QR-powered platform that enables consumers to instantly access detailed product information, ingredients, nutritional data, and transparency insights by scanning a code.",
+    category: "Full Stack",
+    featured: true,
+  },
+  {
+    title: "QR Health Scanner",
+    description:
+      "QR-based system for fast medical data access and scanning.",
+    category: "Full Stack",
+  },
+];
 
   return (
-    <section
-  id="projects"
-  className="max-w-6xl mx-auto px-6 py-32"
->
+    <section id="projects" className="relative px-6 max-w-6xl mx-auto">
+        
 
       {/* title */}
       <div className="text-center mb-16">
@@ -51,20 +52,27 @@ export default function Projects() {
 
             <div className="relative z-10">
 
-              {/* tag */}
-              <span className="text-xs px-3 py-1 rounded-full border border-white/20 text-gray-300">
-                {p.tag}
-              </span>
+              <div className="flex items-center gap-2">
 
-              {/* title */}
-              <h3 className="text-2xl font-semibold mt-4">
-                {p.title}
-              </h3>
+  <span className="text-xs px-3 py-1 rounded-full border border-white/20 text-gray-300">
+    {p.category}
+  </span>
 
-              {/* description */}
-              <p className="text-gray-400 mt-3 leading-relaxed">
-                {p.desc}
-              </p>
+  {p.featured && (
+    <span className="px-3 py-1 text-xs rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+      Featured
+    </span>
+  )}
+
+</div>
+
+<h3 className="text-2xl font-semibold mt-4">
+  {p.title}
+</h3>
+
+<p className="text-gray-400 mt-3 leading-relaxed">
+  {p.description}
+</p>
 
               {/* action */}
               <div className="mt-6 text-sm text-gray-300 hover:text-white cursor-pointer">
