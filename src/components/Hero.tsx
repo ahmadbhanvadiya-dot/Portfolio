@@ -4,46 +4,41 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="h-screen flex flex-col items-center justify-center text-center px-6">
-      
-      <motion.h1 
+    <section className="h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+
+      {/* Background glow */}
+      <div className="absolute w-[400px] h-[400px] bg-purple-500/20 blur-[120px] rounded-full top-10"></div>
+
+      <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-5xl md:text-6xl font-bold"
+        className="text-6xl md:text-7xl font-bold"
       >
-        Ahmad
+        I build things for the web
       </motion.h1>
 
-      <motion.p 
+      <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="text-xl text-gray-400 mt-4"
+        transition={{ delay: 0.2 }}
+        className="text-gray-400 mt-6 max-w-xl"
       >
-        Full-Stack Developer | Python Builder | CS Student
+        Full-Stack Developer • Python Builder • CS Student  
+        I turn ideas into real, working software.
       </motion.p>
 
-      <motion.p 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        className="text-gray-500 mt-3 max-w-xl"
-      >
-        I build real-world software using modern web technologies and Python.
-      </motion.p>
-
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="mt-6 flex gap-4"
+        className="mt-8 flex gap-4"
       >
-        <a href="#projects" className="px-5 py-2 bg-white text-black rounded-xl">
+        <a className="px-6 py-3 bg-white text-black rounded-xl hover:scale-105 transition">
           View Projects
         </a>
-        <a href="#contact" className="px-5 py-2 border border-white rounded-xl">
-          Contact
+
+        <a className="px-6 py-3 border border-white/20 rounded-xl hover:bg-white/10 transition">
+          Contact Me
         </a>
       </motion.div>
 

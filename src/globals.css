@@ -15,3 +15,8 @@ body {
   background: radial-gradient(circle at top, #111, #000);
   color: white;
 }
+
+body {
+  background: radial-gradient(circle at top, #1a1a2e, #000);
+  color: white;
+}
