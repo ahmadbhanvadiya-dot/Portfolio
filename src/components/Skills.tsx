@@ -23,9 +23,8 @@ export default function Skills() {
         {skills.map((skill, i) => (
           <div
             key={i}
-            className="px-5 py-3 rounded-full border border-white/10 
-                       bg-white/5 backdrop-blur-md
-                       hover:bg-white/10 hover:scale-105 transition"
+            className="px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-md glow glow-hover"
+                       
           >
             {skill}
           </div>

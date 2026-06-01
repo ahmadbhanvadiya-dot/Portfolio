@@ -53,3 +53,28 @@ section {
   padding-top: 120px;
   padding-bottom: 120px;
 }
+
+body {
+  background: radial-gradient(circle at top, #0b0b12, #000000);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* subtle noise / texture feel */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.glow {
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 60px rgba(59, 130, 246, 0.25);
+  transition: 0.3s ease;
+}

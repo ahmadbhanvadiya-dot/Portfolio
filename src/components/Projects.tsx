@@ -32,8 +32,7 @@ export default function Projects() {
           <motion.div
             key={i}
             whileHover={{ scale: 1.03 }}
-            className="relative p-6 rounded-2xl border border-white/10 
-                       bg-white/5 backdrop-blur-md overflow-hidden"
+            className="relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md glow glow-hover"
           >
 
             {/* Glow effect */}
