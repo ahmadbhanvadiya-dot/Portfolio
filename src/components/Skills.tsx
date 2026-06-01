@@ -7,23 +7,29 @@ export default function Skills() {
     "React",
     "Tailwind CSS",
     "Git",
-    "APIs",
+    "Node.js",
   ];
 
   return (
-    <section id="skills" className="py-20 px-6 max-w-5xl mx-auto">
-      
-      <h2 className="text-3xl font-bold mb-10">Skills</h2>
+    <section id="skills" className="py-28 px-6 max-w-6xl mx-auto">
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <h2 className="text-4xl font-bold mb-12">
+        Skills & Tools
+      </h2>
+
+      <div className="flex flex-wrap gap-4">
+
         {skills.map((skill, i) => (
           <div
             key={i}
-            className="p-4 border border-white/10 rounded-xl bg-white/5 text-center hover:bg-white/10 transition"
+            className="px-5 py-3 rounded-full border border-white/10 
+                       bg-white/5 backdrop-blur-md
+                       hover:bg-white/10 hover:scale-105 transition"
           >
             {skill}
           </div>
         ))}
+
       </div>
 
     </section>
