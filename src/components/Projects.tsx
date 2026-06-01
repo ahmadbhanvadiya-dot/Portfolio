@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function Projects() {
   return (
     <section id="projects" className="py-20 px-6 max-w-5xl mx-auto">
@@ -6,19 +10,27 @@ export default function Projects() {
 
       <div className="grid md:grid-cols-2 gap-6">
 
-        <div className="p-6 border border-white/10 rounded-xl">
-          <h3 className="text-xl font-semibold">Medicine Dispensing System</h3>
-          <p className="text-gray-400 mt-2">
-            Automated system to improve medication adherence.
-          </p>
-        </div>
+        {[
+          {
+            title: "Medicine Dispensing System",
+            desc: "Automates medicine scheduling and dispensing.",
+          },
+          {
+            title: "QR Health Scan System",
+            desc: "QR-based medical data scanning system.",
+          }
+        ].map((project, i) => (
+          
+          <motion.div
+            key={i}
+            whileHover={{ scale: 1.03 }}
+            className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur"
+          >
+            <h3 className="text-xl font-semibold">{project.title}</h3>
+            <p className="text-gray-400 mt-2">{project.desc}</p>
+          </motion.div>
 
-        <div className="p-6 border border-white/10 rounded-xl">
-          <h3 className="text-xl font-semibold">QR Health Scan System</h3>
-          <p className="text-gray-400 mt-2">
-            QR-based medical data scanning system.
-          </p>
-        </div>
+        ))}
 
       </div>
 
