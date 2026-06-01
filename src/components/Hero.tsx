@@ -4,44 +4,55 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="relative h-screen flex items-center justify-center text-center px-6 overflow-hidden">
-<section id="hero"></section>
-      {/* Background glow blobs */}
-      <div className="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[140px] rounded-full top-[-100px] left-[-100px]" />
-      <div className="absolute w-[400px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full bottom-[-100px] right-[-100px]" />
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center text-center px-6"
+    >
+      {/* background glow */}
+      <div className="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[140px] rounded-full top-[-120px] left-[-120px]" />
+      <div className="absolute w-[400px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full bottom-[-120px] right-[-120px]" />
 
-      <div className="relative z-10 max-w-3xl">
+      <div className="relative z-10 max-w-4xl">
 
-        {/* Main headline */}
+        {/* badge */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mb-6 inline-block px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm text-gray-300"
+        >
+          Full-Stack Developer • Building modern web apps
+        </motion.div>
+
+        {/* headline */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="text-5xl md:text-7xl font-bold leading-tight"
         >
-          Building{" "}
+          I build{" "}
           <span className="bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text">
-            modern web experiences
-          </span>{" "}
-          that feel alive
+            modern digital experiences
+          </span>
         </motion.h1>
 
-        {/* Subtext */}
+        {/* subtext */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-gray-400 mt-6 text-lg"
+          className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto"
         >
-          Full-Stack Developer • Python Builder • CS Student  
-          I turn ideas into clean, scalable, real-world applications.
+          I’m a developer focused on building clean, fast, and scalable web applications
+          using modern technologies like Next.js, React, and Python.
         </motion.p>
 
-        {/* Buttons */}
+        {/* buttons */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-8 flex gap-4 justify-center"
+          className="mt-10 flex gap-4 justify-center"
         >
           <a
             href="#projects"
