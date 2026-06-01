@@ -10,7 +10,7 @@ export default function Projects() {
       "A QR-powered platform that enables consumers to instantly access detailed product information, ingredients, nutritional data, and transparency insights by scanning a code.",
     category: "Full Stack",
     featured: true,
-    github: "https://github.com/ahmadbhanvadiya-dot",
+    github: "https://github.com/ahmadbhanvadiya-dot/Freshlify",
     demo: "#",
   },
   {
@@ -18,7 +18,7 @@ export default function Projects() {
     description:
       "QR-based system for fast medical data access and scanning.",
     category: "Full Stack",
-    github: "https://github.com/ahmadbhanvadiya-dot",
+    github: "https://github.com/ahmadbhanvadiya-dot/vitl",
     demo: "#",
   },
 ];
