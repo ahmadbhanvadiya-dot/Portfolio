@@ -19,12 +19,7 @@ export default function About() {
         </h2>
 
         <p className="text-lg text-gray-400 leading-relaxed text-center max-w-3xl mx-auto">
-          I'm Ahmad Bhanvadiya, a Computer Science student passionate about
-          building real-world software products. I enjoy creating modern web
-          applications, exploring new technologies, participating in hackathons,
-          and turning ideas into practical solutions. My interests include
-          full-stack development, automation, and building products that solve
-          meaningful problems.
+          I'm Ahmad Bhanvadiya, a Computer Science student who loves building software that solves real-world problems. I enjoy creating modern web applications, experimenting with new technologies, and participating in hackathons. Whether it's developing full-stack projects, automating tasks, or turning an idea into a working product, I'm always excited to learn, build, and create solutions that make a meaningful impact.
         </p>
       </motion.div>
     </section>
