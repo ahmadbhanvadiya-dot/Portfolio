@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ahmad Bhanvadiya | Portfolio",
-  description: "Full-Stack Developer Portfolio",
+  title: "Ahmad Bhanvadiya | Full-Stack Developer",
+description:
+  "Computer Science student building web applications, automation systems, and modern software products.",
 };
 
 export default function RootLayout({
