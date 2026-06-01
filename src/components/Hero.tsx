@@ -52,7 +52,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-10 flex gap-4 justify-center"
+          className="mt-10 flex flex-col md:flex-row gap-4 justify-center items-center"
         >
           <a
             href="#projects"
