@@ -15,11 +15,20 @@ export default function Skills() {
   ];
 
   return (
-    <section id="skills" className="px-6 max-w-6xl mx-auto">
+    <section
+  id="skills"
+  className="max-w-6xl mx-auto px-6 py-32"
+>
 
-      <h2 className="text-4xl font-bold text-center tracking-tight">
-        Skills & Technologies
-      </h2>
+      <div className="text-center mb-16">
+  <h2 className="text-4xl font-bold">
+    Skills & Technologies
+  </h2>
+
+  <p className="mt-4 text-gray-400">
+    Tools and technologies I use to build modern applications.
+  </p>
+</div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 

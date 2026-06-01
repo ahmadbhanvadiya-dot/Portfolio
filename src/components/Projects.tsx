@@ -17,15 +17,24 @@ export default function Projects() {
   ];
 
   return (
-    <section id="projects" className="relative px-6 max-w-6xl mx-auto">
+    <section
+  id="projects"
+  className="max-w-6xl mx-auto px-6 py-32"
+>
 
       {/* title */}
-      <h2 className="text-4xl font-bold text-center tracking-tight">
-        Featured Projects
-      </h2>
+      <div className="text-center mb-16">
+  <h2 className="text-4xl font-bold">
+    Featured Projects
+  </h2>
+
+  <p className="mt-4 text-gray-400">
+    A selection of projects I've built and shipped.
+  </p>
+</div>
 
       {/* grid */}
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-12">
 
         {projects.map((p, i) => (
           <motion.div
