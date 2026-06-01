@@ -1,0 +1,22 @@
+export default function Contact() {
+  return (
+    <section id="contact" className="py-28 px-6 max-w-4xl mx-auto text-center">
+
+      <h2 className="text-4xl font-bold mb-6">
+        Let’s work together
+      </h2>
+
+      <p className="text-gray-400 mb-10">
+        I’m open to internships, freelance work, and collaborations.
+      </p>
+
+      <a
+        href="mailto:yourmail@gmail.com"
+        className="px-8 py-4 rounded-xl bg-white text-black font-medium hover:scale-105 transition inline-block"
+      >
+        Say Hello 👋
+      </a>
+
+    </section>
+  );
+}
