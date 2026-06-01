@@ -1,37 +1,71 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 export default function Projects() {
   const projects = [
     {
       title: "Medicine Dispensing System",
-      desc: "Automates medicine scheduling with smart logic."
+      desc: "Automates medicine scheduling and dispensing with smart logic.",
+      tag: "IoT / Automation",
     },
     {
-      title: "QR Health System",
-      desc: "Scans QR and processes medical data digitally."
-    }
+      title: "QR Health Scanner",
+      desc: "QR-based system for fast medical data access and scanning.",
+      tag: "Full Stack",
+    },
   ];
 
   return (
-    <section id="projects" className="py-24 px-6 max-w-6xl mx-auto">
+    <section id="projects" className="py-28 px-6 max-w-6xl mx-auto">
 
-      <h2 className="text-3xl font-bold mb-10">Things I’ve Built</h2>
+      {/* Section title */}
+      <h2 className="text-4xl font-bold mb-12">
+        Featured Projects
+      </h2>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Grid */}
+      <div className="grid md:grid-cols-2 gap-8">
 
         {projects.map((p, i) => (
-          <div
+          <motion.div
             key={i}
-            className="p-6 rounded-2xl border border-white/10 bg-white/5 
-                       hover:bg-white/10 hover:scale-[1.03] transition"
+            whileHover={{ scale: 1.03 }}
+            className="relative p-6 rounded-2xl border border-white/10 
+                       bg-white/5 backdrop-blur-md overflow-hidden"
           >
-            <h3 className="text-xl font-semibold">{p.title}</h3>
-            <p className="text-gray-400 mt-2">{p.desc}</p>
-          </div>
+
+            {/* Glow effect */}
+            <div className="absolute inset-0 opacity-0 hover:opacity-100 transition bg-gradient-to-r from-purple-500/10 to-blue-500/10" />
+
+            <div className="relative z-10">
+
+              {/* Tag */}
+              <span className="text-xs px-3 py-1 rounded-full border border-white/20 text-gray-300">
+                {p.tag}
+              </span>
+
+              {/* Title */}
+              <h3 className="text-2xl font-semibold mt-4">
+                {p.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-400 mt-3 leading-relaxed">
+                {p.desc}
+              </p>
+
+              {/* Button placeholder */}
+              <div className="mt-6 text-sm text-gray-300 hover:text-white cursor-pointer">
+                View Details →
+              </div>
+
+            </div>
+
+          </motion.div>
         ))}
 
       </div>
-
     </section>
   );
 }
