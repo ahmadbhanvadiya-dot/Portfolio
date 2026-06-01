@@ -24,14 +24,7 @@ export default function Projects() {
 ];
 
   return (
-   <motion.section
-    id="projects"
-    className="relative px-6 max-w-6xl mx-auto py-32"
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5 }}
-  >
+    <section id="projects" className="relative px-6 max-w-6xl mx-auto">
         
 
       {/* title */}
@@ -114,6 +107,6 @@ export default function Projects() {
 
       </div>
 
-    </motion.section>
+    </section>
   );
 }
