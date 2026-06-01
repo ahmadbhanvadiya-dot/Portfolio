@@ -15,9 +15,12 @@ export default function Skills() {
   ];
 
   return (
-    <section
+   <motion.section
   id="skills"
-  className="max-w-6xl mx-auto px-6 py-32"
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.5 }}
 >
 
       <div className="text-center mb-16">
@@ -48,6 +51,6 @@ export default function Skills() {
 
       </div>
 
-    </section>
+   </motion.section>
   );
 }

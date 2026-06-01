@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 
 export default function Contact() {
   return (
-    <section
-      id="contact"
-      className="max-w-6xl mx-auto px-6 py-32"
-    >
+    <motion.section
+  id="contact"
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.5 }}
+>
       <div className="text-center mb-16">
         <h2 className="text-4xl font-bold">
           Let's Connect
@@ -72,6 +75,6 @@ export default function Contact() {
           </p>
         </a>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }
