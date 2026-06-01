@@ -79,6 +79,13 @@ export default function Hero() {
   GitHub
 </a>
 
+<a
+  href="/resume.pdf"
+  target="_blank"
+  className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 transition"
+>
+  Resume
+</a>
         </motion.div>
 
 
