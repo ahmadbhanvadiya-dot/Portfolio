@@ -10,15 +10,15 @@ export default function Projects() {
       "A QR-powered platform that enables consumers to instantly access detailed product information, ingredients, nutritional data, and transparency insights by scanning a code.",
     category: "Full Stack",
     featured: true,
-    github: "https://github.com/yourusername/freshlify",
-    demo: "https://freshlify.vercel.app",
+    github: "https://github.com/ahmadbhanvadiya-dot",
+    demo: "#",
   },
   {
     title: "QR Health Scanner",
     description:
       "QR-based system for fast medical data access and scanning.",
     category: "Full Stack",
-    github: "https://github.com/yourusername/qr-health-scanner",
+    github: "https://github.com/ahmadbhanvadiya-dot",
     demo: "#",
   },
 ];

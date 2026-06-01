@@ -69,7 +69,18 @@ export default function Hero() {
           >
             Contact Me
           </a>
+
+          <a
+  href="https://github.com/ahmadbhanvadiya-dot"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="px-6 py-3 rounded-xl border border-purple-500/30 hover:bg-purple-500/10 transition"
+>
+  GitHub
+</a>
+
         </motion.div>
+
 
       </div>
     </section>

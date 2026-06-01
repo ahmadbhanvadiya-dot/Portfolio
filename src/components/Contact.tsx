@@ -12,6 +12,15 @@ export default function Contact() {
       </p>
 
       <a
+  href="https://github.com/ahmadbhanvadiya-dot"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-purple-400 hover:text-purple-300 transition"
+>
+  GitHub →
+</a>
+
+      <a
         href="mailto:yourmail@gmail.com"
         className="px-8 py-4 rounded-xl bg-white text-black font-medium hover:scale-105 transition inline-block"
       >
