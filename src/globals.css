@@ -7,12 +7,13 @@ html {
 }
 
 body {
-  background: radial-gradient(circle at top, #0b0b12, #000000);
+  background: radial-gradient(circle at top, #2a0a4a, #000000 65%);
   color: white;
   overflow-x: hidden;
+
 }
 
-/* subtle noise texture */
+
 body::before {
   content: "";
   position: fixed;
@@ -22,9 +23,9 @@ body::before {
   pointer-events: none;
 }
 
-/* glow system */
+
 .glow {
-  box-shadow: 0 0 80px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 0 120px rgba(168, 85, 247, 0.35);
 }
 
 .glow-hover {
@@ -32,12 +33,6 @@ body::before {
 }
 
 .glow-hover:hover {
-  box-shadow: 0 0 100px rgba(59, 130, 246, 0.3);
-  transform: translateY(-4px);
-}
-
-/* section spacing */
-section {
-  padding-top: 140px;
-  padding-bottom: 140px;
+  box-shadow: 0 0 140px rgba(59, 130, 246, 0.45);
+  transform: translateY(-6px);
 }

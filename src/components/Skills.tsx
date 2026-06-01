@@ -31,7 +31,7 @@ export default function Skills() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
             whileHover={{ scale: 1.05 }}
-            className="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
+          className="p-4 rounded-xl border border-purple-500/20 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
           >
             {skill}
           </motion.div>

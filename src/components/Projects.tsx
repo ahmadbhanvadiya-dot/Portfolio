@@ -32,7 +32,7 @@ export default function Projects() {
             key={i}
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
-            className="relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
+           className="relative p-6 rounded-2xl border border-purple-500/20 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
                        
           >
 
