@@ -48,3 +48,8 @@ body::before {
     transform: translate(200px, 150px);
   }
 }
+
+section {
+  padding-top: 120px;
+  padding-bottom: 120px;
+}

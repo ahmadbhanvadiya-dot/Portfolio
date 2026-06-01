@@ -6,11 +6,11 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main>
-      <Reveal><Hero /></Reveal>
-      <Reveal><Projects /></Reveal>
-      <Reveal><Skills /></Reveal>
-      <Reveal><Contact /></Reveal>
+    <main className="max-w-6xl mx-auto px-6">
+      <Hero />
+      <Projects />
+      <Skills />
+      <Contact />
     </main>
   );
 }

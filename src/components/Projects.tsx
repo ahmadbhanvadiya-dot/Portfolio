@@ -17,7 +17,7 @@ export default function Projects() {
   ];
 
   return (
-    <section id="projects" className="py-28 px-6 max-w-6xl mx-auto">
+    <section id="projects" className="scroll-mt-24 py-28 px-6">
 
       {/* Section title */}
       <h2 className="text-4xl font-bold mb-12">
