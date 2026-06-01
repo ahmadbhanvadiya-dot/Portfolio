@@ -20,7 +20,7 @@ export default function Projects() {
     <section id="projects" className="relative px-6 max-w-6xl mx-auto">
 
       {/* title */}
-      <h2 className="text-4xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold text-center tracking-tight">
         Featured Projects
       </h2>
 
@@ -32,8 +32,8 @@ export default function Projects() {
             key={i}
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
-            className="relative p-6 rounded-2xl border border-white/10 
-                       bg-white/5 backdrop-blur-md overflow-hidden"
+            className="relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
+                       
           >
 
             {/* glow background on hover */}

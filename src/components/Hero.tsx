@@ -28,7 +28,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-5xl md:text-7xl font-bold leading-tight"
+          className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight"
         >
           I build{" "}
           <span className="bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text">
@@ -41,7 +41,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto"
+          className="text-gray-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto"
         >
           I’m a developer focused on building clean, fast, and scalable web applications
           using modern technologies like Next.js, React, and Python.

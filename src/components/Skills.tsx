@@ -17,7 +17,7 @@ export default function Skills() {
   return (
     <section id="skills" className="px-6 max-w-6xl mx-auto">
 
-      <h2 className="text-4xl font-bold mb-12 text-center">
+      <h2 className="text-4xl font-bold text-center tracking-tight">
         Skills & Technologies
       </h2>
 
@@ -31,9 +31,7 @@ export default function Skills() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
             whileHover={{ scale: 1.05 }}
-            className="relative p-4 rounded-xl border border-white/10 
-                       bg-white/5 backdrop-blur-md text-center
-                       hover:border-purple-400/30 transition"
+            className="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
           >
             {skill}
           </motion.div>
