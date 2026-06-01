@@ -22,7 +22,9 @@ export default function Hero() {
         >
           Full-Stack Developer • Building modern web apps
         </motion.div>
-
+<div className="inline-flex items-center px-4 py-2 rounded-full border border-purple-500/20 bg-purple-500/10 text-purple-300 text-sm mb-6">
+  🚀 Open to Internships & Collaborations
+</div>
         {/* headline */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -55,8 +57,8 @@ export default function Hero() {
         >
           <a
             href="#projects"
-            className="px-6 py-3 rounded-xl bg-white text-black font-medium 
-           hover:scale-105 transition glow-hover"
+           className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 transition" 
+      
           >
             View Projects
           </a>
