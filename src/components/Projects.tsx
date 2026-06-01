@@ -10,12 +10,16 @@ export default function Projects() {
       "A QR-powered platform that enables consumers to instantly access detailed product information, ingredients, nutritional data, and transparency insights by scanning a code.",
     category: "Full Stack",
     featured: true,
+    github: "https://github.com/yourusername/freshlify",
+    demo: "https://freshlify.vercel.app",
   },
   {
     title: "QR Health Scanner",
     description:
       "QR-based system for fast medical data access and scanning.",
     category: "Full Stack",
+    github: "https://github.com/yourusername/qr-health-scanner",
+    demo: "#",
   },
 ];
 
@@ -74,10 +78,27 @@ export default function Projects() {
   {p.description}
 </p>
 
-              {/* action */}
-              <div className="mt-6 text-sm text-gray-300 hover:text-white cursor-pointer">
-                View Details →
-              </div>
+              <div className="mt-6 flex gap-3">
+
+  <a
+    href={p.github}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="px-4 py-2 rounded-lg border border-white/10 hover:border-purple-500/40 hover:bg-white/5 transition"
+  >
+    GitHub
+  </a>
+
+  <a
+    href={p.demo}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 transition"
+  >
+    Live Demo
+  </a>
+
+</div>
 
             </div>
 
