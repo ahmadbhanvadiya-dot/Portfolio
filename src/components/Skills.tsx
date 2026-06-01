@@ -12,6 +12,7 @@ export default function Skills() {
 
   return (
     <section id="projects" className="scroll-mt-24 py-28 px-6">
+        <section id="skills"></section>
 
       <h2 className="text-4xl font-bold mb-12">
         Skills & Tools

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center text-center px-6 overflow-hidden">
-
+<section id="hero"></section>
       {/* Background glow blobs */}
       <div className="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[140px] rounded-full top-[-100px] left-[-100px]" />
       <div className="absolute w-[400px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full bottom-[-100px] right-[-100px]" />
