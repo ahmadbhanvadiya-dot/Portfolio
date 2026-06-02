@@ -13,9 +13,9 @@ export default function Projects() {
     github: "https://github.com/ahmadbhanvadiya-dot/Freshlify",
   },
   {
-    title: "QR Health Scanner",
+    title: "Vitl",
     description:
-      "QR-based system for fast medical data access and scanning.",
+      "Vitl is a modern digital health profile platform that helps users securely store and access important medical information instantly through QR technology. Designed for emergencies and quick access, the platform makes healthcare data more accessible, organized, and shareable when needed most.",
     category: "Full Stack",
     github: "https://github.com/ahmadbhanvadiya-dot/vitl",
   },
