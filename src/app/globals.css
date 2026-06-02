@@ -17,7 +17,7 @@ body::before {
   position: fixed;
   inset: 0;
   background: url("https://grainy-gradients.vercel.app/noise.svg");
-  opacity: 0.05;
+  opacity: 0.15;
   pointer-events: none;
 }
 
