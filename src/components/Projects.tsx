@@ -11,7 +11,6 @@ export default function Projects() {
     category: "Full Stack",
     featured: true,
     github: "https://github.com/ahmadbhanvadiya-dot/Freshlify",
-    demo: "#",
   },
   {
     title: "QR Health Scanner",
@@ -19,8 +18,16 @@ export default function Projects() {
       "QR-based system for fast medical data access and scanning.",
     category: "Full Stack",
     github: "https://github.com/ahmadbhanvadiya-dot/vitl",
-    demo: "#",
   },
+
+  {
+    title: "Meridian Restro",
+    description:
+      "A modern restaurant website showcasing menu, ambience, reservations, and contact details with smooth UI and responsive design experience features included.",
+    category: "Full Stack",
+    github: "https://github.com/ahmadbhanvadiya-dot/MeridianRestro",
+  },
+
 ];
 
   return (
@@ -89,14 +96,7 @@ export default function Projects() {
     GitHub
   </a>
 
-  <a
-    href={p.demo}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 transition"
-  >
-    Live Demo
-  </a>
+  
 
 </div>
 
