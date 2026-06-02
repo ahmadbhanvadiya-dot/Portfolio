@@ -7,6 +7,15 @@ export default function Footer() {
         </p>
 
         <div className="flex gap-6 mt-4 md:mt-0">
+
+          <a
+            href="https://www.instagram.com/ahmad.bhanvadia/?hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white"
+          >
+            Insta
+          </a>
           <a
             href="https://github.com/ahmadbhanvadiya-dot"
             target="_blank"
