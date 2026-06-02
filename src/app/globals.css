@@ -23,7 +23,7 @@ body::before {
 
 
 .glow {
-  box-shadow: 0 0 120px rgba(168, 85, 247, 0.35);
+  box-shadow: 0 0 120px rgba(255, 255, 255, 0.35);
 }
 
 .glow-hover {
