@@ -40,7 +40,7 @@ export default function Navbar() {
       bg-white/5 backdrop-blur-xl border border-white/10
       rounded-2xl z-50 shadow-lg"
     >
-      <div className="flex justify-between items-center px-6 py-3">
+      <div className="flex justify-between items-center px-6 py-2.5">
         <h1 className="font-bold text-white">
           Portfolio
         </h1>
