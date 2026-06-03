@@ -6,7 +6,8 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center text-center px-6"
+      
+      className="scroll-mt-32 py-32"
     >
       {/* Background Glow */}
       <div className="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[140px] rounded-full top-[-120px] left-[-120px]" />
