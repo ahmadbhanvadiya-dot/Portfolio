@@ -4,10 +4,10 @@
   "title": "Design System: Ahmad Bhanvadiya",
   "extensions": {
     "colorMeta": {
-      "accent": { "role": "primary", "displayName": "Ultramarine Signal", "canonical": "#2e43c4", "tonalRamp": ["#121a4f", "#1c2a7d", "#2639a8", "#2e43c4", "#5668d6", "#8292e4", "#b2bcf0", "#e0e4fa"] },
-      "accent-dark": { "role": "primary", "displayName": "Ultramarine Signal (dark)", "canonical": "#95a3ff", "tonalRamp": ["#1d2459", "#2b3366", "#3c4a9e", "#5a6bd6", "#7886f0", "#95a3ff", "#bfc7ff", "#e6e9ff"] },
-      "selection": { "role": "primary", "displayName": "Selection Tint", "canonical": "#d9ddf7" },
-      "selection-dark": { "role": "primary", "displayName": "Selection Tint (dark)", "canonical": "#2b3366" },
+      "accent": { "role": "primary", "displayName": "Ultramarine Signal", "canonical": "#2c3ec9", "tonalRamp": ["#121a4f", "#1c2a7d", "#2639a8", "#2c3ec9", "#5668d6", "#8292e4", "#b2bcf0", "#e0e4fa"] },
+      "accent-dark": { "role": "primary", "displayName": "Ultramarine Signal (dark)", "canonical": "#7f93ff", "tonalRamp": ["#1d2459", "#262f6b", "#3c4a9e", "#5a6bd6", "#7886f0", "#7f93ff", "#bfc7ff", "#e6e9ff"] },
+      "selection": { "role": "primary", "displayName": "Selection Tint", "canonical": "#d8ddf8" },
+      "selection-dark": { "role": "primary", "displayName": "Selection Tint (dark)", "canonical": "#262f6b" },
       "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#f5f3ee", "tonalRamp": ["#1b1a18", "#3a3834", "#67645d", "#9b978e", "#cdc8bd", "#e0dcd3", "#ece9e2", "#f5f3ee"] },
       "surface": { "role": "neutral", "displayName": "Bone Surface", "canonical": "#ece9e2" },
       "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#161513", "tonalRamp": ["#0b0b0a", "#161513", "#2a2926", "#3a3834", "#67645d", "#9b978e", "#cdc8bd", "#edebe5"] },
@@ -58,7 +58,7 @@
       "refersTo": "button-primary",
       "description": "Ink-filled main action; floods accent on hover.",
       "html": "<a class=\"ds-btn-primary\" href=\"#\">View selected work <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 3v10M4 9l4 4 4-4\"/></svg></a>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 20px; border-radius: 4px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Schibsted Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), background-color 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary svg { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--accent, #2e43c4); color: var(--accent-ink, #fff); } .ds-btn-primary:hover svg { transform: translateY(2px); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, #2e43c4); outline-offset: 3px; }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 20px; border-radius: 4px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Schibsted Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), background-color 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary svg { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--accent, #2c3ec9); color: var(--accent-ink, #fff); } .ds-btn-primary:hover svg { transform: translateY(2px); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, #2c3ec9); outline-offset: 3px; }"
     },
     {
       "name": "Outline Button",
@@ -66,7 +66,7 @@
       "refersTo": "button-outline",
       "description": "Mono secondary action (Copy email) with a strong hairline.",
       "html": "<button class=\"ds-btn-outline\" type=\"button\">Copy email</button>",
-      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 1px solid var(--hairline-strong, #cdc8bd); border-radius: 4px; background: transparent; color: var(--graphite, #67645d); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; } .ds-btn-outline:hover { border-color: var(--ink, #161513); color: var(--ink, #161513); } .ds-btn-outline:focus-visible { outline: 2px solid var(--accent, #2e43c4); outline-offset: 3px; }"
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 1px solid var(--hairline-strong, #cdc8bd); border-radius: 4px; background: transparent; color: var(--graphite, #67645d); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; } .ds-btn-outline:hover { border-color: var(--ink, #161513); color: var(--ink, #161513); } .ds-btn-outline:focus-visible { outline: 2px solid var(--accent, #2c3ec9); outline-offset: 3px; }"
     },
     {
       "name": "Draw-in Link",
@@ -80,7 +80,7 @@
       "kind": "nav",
       "description": "Monogram + name left; graphite links with an accent dot on the active one.",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\"><span class=\"ds-mono\">AB</span>Ahmad Bhanvadiya</a><ul><li><a href=\"#\" aria-current=\"true\">Work</a></li><li><a href=\"#\">About</a></li><li><a href=\"#\">Contact</a></li></ul></nav>",
-      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; background: var(--paper, #f5f3ee); border-bottom: 1px solid var(--hairline, #e0dcd3); font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; } .ds-nav-brand { display: flex; align-items: center; gap: 12px; color: var(--ink, #161513); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; text-decoration: none; } .ds-mono { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 3px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 11px; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-nav-brand:hover .ds-mono { transform: rotate(-6deg); } .ds-nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; } .ds-nav ul a { position: relative; font-size: 14px; color: var(--graphite, #67645d); text-decoration: none; transition: color 0.2s; } .ds-nav ul a:hover, .ds-nav ul a[aria-current] { color: var(--ink, #161513); } .ds-nav ul a[aria-current]::before { content: \"\"; position: absolute; left: -12px; top: 50%; width: 4px; height: 4px; border-radius: 50%; background: var(--accent, #2e43c4); transform: translateY(-50%); }"
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; background: var(--paper, #f5f3ee); border-bottom: 1px solid var(--hairline, #e0dcd3); font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; } .ds-nav-brand { display: flex; align-items: center; gap: 12px; color: var(--ink, #161513); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; text-decoration: none; } .ds-mono { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 3px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 11px; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-nav-brand:hover .ds-mono { transform: rotate(-6deg); } .ds-nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; } .ds-nav ul a { position: relative; font-size: 14px; color: var(--graphite, #67645d); text-decoration: none; transition: color 0.2s; } .ds-nav ul a:hover, .ds-nav ul a[aria-current] { color: var(--ink, #161513); } .ds-nav ul a[aria-current]::before { content: \"\"; position: absolute; left: -12px; top: 50%; width: 4px; height: 4px; border-radius: 50%; background: var(--accent, #2c3ec9); transform: translateY(-50%); }"
     },
     {
       "name": "Section Frame",
@@ -109,7 +109,7 @@
       "kind": "chip",
       "description": "Accent state dot beside an ink status line; the accent's canonical use.",
       "html": "<p class=\"ds-status\"><span aria-hidden=\"true\"></span>Open to internships &amp; collaborations</p>",
-      "css": ".ds-status { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; font-size: 13px; color: var(--ink, #161513); } .ds-status span { width: 8px; height: 8px; border-radius: 50%; background: var(--accent, #2e43c4); }"
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; font-size: 13px; color: var(--ink, #161513); } .ds-status span { width: 8px; height: 8px; border-radius: 50%; background: var(--accent, #2c3ec9); }"
     }
   ],
   "narrative": {

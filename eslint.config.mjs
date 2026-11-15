@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Installed design skills and their working folders are not part of the site.
+    ".claude/**",
+    ".agents/**",
+    ".impeccable/**",
+    ".taste-skill/**",
   ]),
 ]);
 

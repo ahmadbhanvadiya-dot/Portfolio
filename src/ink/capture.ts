@@ -138,7 +138,7 @@ export async function capturePage(
       style.textContent =
         "*,*::before,*::after{animation:none!important;transition:none!important}";
       doc.head.appendChild(style);
-      doc.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
+      doc.querySelectorAll("[data-scroll]").forEach((el) => el.classList.add("in-view"));
       doc.querySelectorAll("[data-hovering]").forEach((el) => el.removeAttribute("data-hovering"));
 
       // svh/dvh resolve against the clone iframe, not the phone's real viewport.

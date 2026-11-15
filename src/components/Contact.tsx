@@ -15,10 +15,10 @@ export default function Contact() {
       aria-labelledby="contact-title"
       className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-10"
     >
-      <div className="border-t border-hairline pb-24 pt-16 sm:pb-32 sm:pt-20">
+      <div data-scroll className="scroll-rule pb-24 pt-16 sm:pb-32 sm:pt-20">
         <h2
           id="contact-title"
-          className="max-w-[14ch] text-[clamp(2.5rem,6.6vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em]"
+          className="scroll-rise max-w-[14ch] text-[clamp(2.125rem,6.6vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em]"
         >
           Have something interesting in mind?
         </h2>
@@ -30,7 +30,7 @@ export default function Contact() {
         <div className="mt-12 flex flex-col items-start gap-5 sm:mt-16 sm:flex-row sm:flex-wrap sm:items-center sm:gap-8">
           <a
             href={`mailto:${site.email}`}
-            className="link-strong break-all text-[clamp(1.25rem,3.4vw,2.25rem)] font-medium tracking-[-0.03em] transition-colors hover:text-accent"
+            className="link-strong -my-2 break-all py-2 text-[clamp(1.25rem,3.4vw,2.25rem)] font-medium tracking-[-0.03em] transition-colors hover:text-accent"
           >
             {site.email}
           </a>
@@ -52,7 +52,7 @@ export default function Contact() {
                 </span>
                 <ArrowUpRight
                   size={18}
-                  className="text-graphite transition-[transform,color] duration-500 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                  className="text-graphite transition-[transform,color] duration-150 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
                 />
               </a>
             </li>

@@ -1,8 +1,17 @@
-import { site } from "@/data/site";
+import { projects, site } from "@/data/site";
 import { ArrowDown, ArrowUpRight } from "./Icons";
 
+const live = (slug: string) => projects.find((p) => p.slug === slug)?.live ?? site.github;
+
+function Inline({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="link-strong text-ink">
+      {children}
+    </a>
+  );
+}
+
 const metaLinks = [
-  { label: "GitHub", href: site.github, external: true },
   { label: "LinkedIn", href: site.linkedin, external: true },
   { label: "Résumé", href: site.resume, external: true },
 ];
@@ -12,7 +21,7 @@ export default function Hero() {
     <section
       id="home"
       data-ink-fixh
-      className="mx-auto mb-14 flex min-h-[100svh] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
+      className="mx-auto mb-14 flex min-h-[min(100svh,56rem)] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
     >
       <div className="flex flex-1 flex-col justify-center py-16 sm:py-24">
         <h1 className="max-w-[15ch] text-[clamp(2.5rem,7.4vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.04em]">
@@ -20,7 +29,7 @@ export default function Hero() {
             Ahmad Bhanvadiya.
           </span>
           <span className="enter block text-graphite" style={{ ["--i" as string]: 1 }}>
-            Building thoughtful digital experiences.
+            I build things you can open.
           </span>
         </h1>
 
@@ -28,9 +37,11 @@ export default function Hero() {
           className="enter mt-8 max-w-[52ch] text-[1.0625rem] leading-relaxed text-graphite sm:mt-10 sm:text-[1.25rem] sm:leading-[1.55]"
           style={{ ["--i" as string]: 3 }}
         >
-          Computer Science student and developer exploring the intersection of software
-          engineering, product thinking, and creative technology. I enjoy turning ideas
-          into useful real-world products.
+          Computer science student. So far: a bus-route planner for the Smart India Hackathon{" "}
+          (<Inline href={live("smartcommute")}>SmartCommute AI</Inline>), an emergency health profile
+          behind a QR code (<Inline href={live("vitl")}>Vitl</Inline>) and a record tool for field drug
+          tests (<Inline href={live("narcolens")}>NarcoLens</Inline>). All live, all on{" "}
+          <Inline href={site.github}>GitHub</Inline>.
         </p>
 
         <div
@@ -39,12 +50,12 @@ export default function Hero() {
         >
           <a
             href="#work"
-            className="group inline-flex h-11 items-center gap-2.5 rounded-[4px] bg-ink pl-5 pr-4 text-[15px] font-medium text-paper transition-[transform,background-color] duration-300 ease-out-expo hover:bg-accent hover:text-accent-ink active:scale-[0.98]"
+            className="press cta group inline-flex h-11 items-center gap-2.5 rounded-[4px] bg-ink pl-5 pr-4 text-[15px] font-medium text-paper"
           >
             View selected work
-            <ArrowDown className="transition-transform duration-500 ease-out-expo group-hover:translate-y-0.5" />
+            <ArrowDown className="transition-transform duration-150 ease-out group-hover:translate-y-0.5" />
           </a>
-          <a href="#contact" className="link-strong text-[15px] font-medium">
+          <a href="#contact" className="link-strong -my-3 py-3 text-[15px] font-medium">
             Get in touch
           </a>
         </div>
@@ -52,7 +63,7 @@ export default function Hero() {
 
       <div
         className="enter flex flex-col gap-4 border-t border-hairline py-5 text-[13px] sm:flex-row sm:items-center sm:justify-between"
-        style={{ ["--i" as string]: 6 }}
+        style={{ ["--i" as string]: 5 }}
       >
         <p className="flex items-center gap-2.5 text-ink">
           <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
@@ -65,10 +76,10 @@ export default function Hero() {
                 href={l.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link inline-flex items-center gap-1 hover:text-ink"
+                className="link nudge -my-3 inline-flex items-center gap-1 py-3 hover:text-ink"
               >
                 {l.label}
-                <ArrowUpRight size={12} />
+                <ArrowUpRight size={12} className="nudge__arrow" />
               </a>
             </li>
           ))}

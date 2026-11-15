@@ -10,17 +10,17 @@ export default function Footer() {
           <span className="text-ink">{site.name}</span> © <Year />
         </p>
         <div className="flex items-center gap-6 font-mono">
-          <a href={site.github} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
+          <a href={site.github} target="_blank" rel="noopener noreferrer" className="link -my-3 py-3 hover:text-ink">
             GitHub
           </a>
-          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
+          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link -my-3 py-3 hover:text-ink">
             LinkedIn
           </a>
-          <a href="#home" className="group ml-auto inline-flex items-center gap-1.5 hover:text-ink sm:ml-4">
+          <a href="#home" className="group -my-2.5 ml-auto inline-flex items-center gap-1.5 py-2.5 hover:text-ink sm:ml-4">
             Back to top
             <ArrowUp
               size={13}
-              className="transition-transform duration-500 ease-out-expo group-hover:-translate-y-0.5"
+              className="transition-transform duration-150 ease-out group-hover:-translate-y-0.5"
             />
           </a>
         </div>

@@ -1,10 +1,10 @@
+import { BACKGROUND } from "./params";
+
 export type Theme = "light" | "dark";
 
-/** The theme currently rendered: an explicit choice, or the system preference. */
+/** The theme currently rendered. Dark unless the visitor chose light (set before paint). */
 export function getTheme(): Theme {
-  const set = document.documentElement.getAttribute("data-theme");
-  if (set === "light" || set === "dark") return set;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
 }
 
 export function otherTheme(theme: Theme): Theme {
@@ -14,6 +14,7 @@ export function otherTheme(theme: Theme): Theme {
 /** Instantly applies a theme to the live DOM, remembers it, and syncs the toggle's ARIA state. */
 export function applyTheme(theme: Theme, toggle?: HTMLButtonElement | null): void {
   document.documentElement.setAttribute("data-theme", theme);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", BACKGROUND[theme]);
   try {
     localStorage.setItem("theme", theme);
   } catch {

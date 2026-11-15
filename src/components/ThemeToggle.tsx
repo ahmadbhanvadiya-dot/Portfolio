@@ -80,7 +80,7 @@ export default function ThemeToggle() {
       onClick={onClick}
       data-ink-live
       aria-label={theme ? `Switch to ${next} theme` : "Toggle theme"}
-      className="theme-toggle grid size-9 place-items-center rounded-[4px] text-graphite hover:bg-surface hover:text-ink"
+      className="theme-toggle press grid size-11 place-items-center rounded-[4px] text-graphite hover:bg-surface hover:text-ink"
     >
       <svg className="ink-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
         <path className="ink-icon__body" d="M7.4 12a4.6 4.6 0 1 0 9.2 0a4.6 4.6 0 1 0 -9.2 0z" />

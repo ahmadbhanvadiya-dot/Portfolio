@@ -212,6 +212,13 @@ export class InkRenderer {
     snapshot.canvas.height = 0;
   }
 
+  /** Texture px per CSS px of the sharpest snapshot (0 before any). */
+  snapshotScale(): number {
+    let s = 0;
+    for (const t of this.textures.values()) s = Math.max(s, t.scale);
+    return s;
+  }
+
   /** True when a snapshot for `theme` exists and matches the current layout. */
   hasValid(theme: Theme, key: string): boolean {
     return !this.lost && this.textures.get(theme)?.key === key;

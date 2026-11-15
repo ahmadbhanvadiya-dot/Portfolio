@@ -17,7 +17,11 @@ const RESIZE_DEBOUNCE_MS = 250;
 /** CSS cross-fade used without WebGL2, with reduced motion, or before snapshots are ready. */
 const CSS_FADE_S = 0.45;
 /** Quiet time (no scroll / pointer / keys) before refreshing snapshots whose content changed. */
-const IDLE_REFRESH_MS = 1500;
+const IDLE_REFRESH_MS = 2500;
+/** Content refreshes (nav state, selected project) run at most this often. */
+const REFRESH_INTERVAL_MS = 12000;
+/** Frames slower than this, on average over the first few, drop the overlay to 1x. */
+const SLOW_FRAME_MS = 22;
 /** First capture waits for the hero entrance (≈1.6s) so it never competes with it. */
 const FIRST_CAPTURE_AT_MS = 2000;
 
@@ -78,6 +82,13 @@ export class InkTransition {
   private idleTimer = 0;
   private idleHandle = 0;
   private contentDirty = false;
+  private lastRefresh = 0;
+  /** Set once frames were too slow: later spreads start at 1x as well. */
+  private degraded = false;
+  /** Low-power hint: few cores or little memory start at 1x. */
+  private readonly lowPower =
+    (navigator.hardwareConcurrency || 8) <= 4 ||
+    ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4;
   private disposed = false;
   private readonly cleanups: (() => void)[] = [];
 
@@ -106,14 +117,14 @@ export class InkTransition {
     }
     root.dataset.ink = "webgl";
 
-    this.renderer.resize(renderScale());
+    this.renderer.resize(this.overlayScale());
     this.renderer.watchContext(
       () => this.cancel(),
       () => this.scheduleCapture(0),
     );
 
     this.listen(window, "resize", () => {
-      this.renderer?.resize(renderScale());
+      this.renderer?.resize(this.overlayScale());
       if (this.frame) this.draw();
       this.scheduleCapture(RESIZE_DEBOUNCE_MS);
     });
@@ -173,7 +184,9 @@ export class InkTransition {
     // The live DOM always holds the latest target, so this is right even mid-transition.
     const to = otherTheme(getTheme());
     const renderer = this.renderer;
+    // Snapshots are keyed to the page's render scale; the overlay itself may draw coarser.
     const scale = renderScale();
+    const drawScale = this.overlayScale();
     const interrupting = this.frame !== null;
     // Snapshots belong to the layer set they were captured with.
     const layers = this.layers;
@@ -202,7 +215,7 @@ export class InkTransition {
       this.tween?.kill();
       this.fade?.kill();
       this.tween = this.fade = null;
-      renderer.resize(scale);
+      renderer.resize(drawScale);
       renderer.setLayers(this.layerRects());
       const frozen = this.currentFrame();
       from = frozen && renderer.freeze(frozen) ? "composite" : getTheme();
@@ -219,7 +232,7 @@ export class InkTransition {
     if (!interrupting || !this.proxy.classList.contains("is-active")) this.proxyIcon?.copyFrom(this.icon);
     this.placeProxy(chromeFrom);
 
-    renderer.resize(scale);
+    renderer.resize(drawScale);
     this.draw();
     // Same task: the overlay (showing "from") and the flipped DOM hit the screen together.
     renderer.canvas.style.opacity = "1";
@@ -234,10 +247,20 @@ export class InkTransition {
     const chromeDelay = this.inkArrival(center, maxDist, this.toggleCenter()) * duration;
     const swap = Math.min(0.18, duration * 0.15);
 
+    // Adaptive quality: if the first frames are slow on this device, finish at 1x.
+    let frames = 0;
+    let firstFrameAt = 0;
     this.tween = new Tween({
       duration,
       timeScale: inkParams.timeScale,
       onUpdate: (time) => {
+        const now = performance.now();
+        if (frames === 0) firstFrameAt = now;
+        else if (frames === 8 && !this.degraded && (now - firstFrameAt) / 8 > SLOW_FRAME_MS) {
+          this.degraded = true;
+          renderer.resize(1);
+        }
+        frames++;
         this.state.time = time;
         this.state.progress = EASE(time / duration);
         // Hold the old chrome until the ink reaches the button, then hand over.
@@ -343,6 +366,16 @@ export class InkTransition {
     return Math.min(0.85, 1 - Math.cbrt(1 - p));
   }
 
+  /**
+   * Device px per CSS px for the overlay canvas. Never sharper than the snapshots it samples
+   * (extra pixels would only interpolate them), 1x on low-power devices or after slow frames.
+   */
+  private overlayScale(): number {
+    if (this.degraded || this.lowPower) return 1;
+    const tex = this.renderer?.snapshotScale() ?? 0;
+    return Math.max(1, Math.min(renderScale(), tex > 0 ? tex : renderScale()));
+  }
+
   private toggleCenter(): Point {
     const r = this.button.getBoundingClientRect();
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -393,10 +426,13 @@ export class InkTransition {
 
   private armIdleRefresh(): void {
     window.clearTimeout(this.idleTimer);
+    const sinceLast = performance.now() - this.lastRefresh;
+    const wait = Math.max(IDLE_REFRESH_MS, REFRESH_INTERVAL_MS - sinceLast);
     this.idleTimer = window.setTimeout(() => {
       const run = () => {
         if (!this.contentDirty) return;
         this.contentDirty = false;
+        this.lastRefresh = performance.now();
         // Recapture over the still-valid snapshots: a toggle meanwhile keeps its ink.
         void this.captureAll(true);
       };
@@ -405,7 +441,7 @@ export class InkTransition {
       } else {
         run();
       }
-    }, IDLE_REFRESH_MS);
+    }, wait);
   }
 
   private scheduleCapture(delay: number): void {
@@ -446,7 +482,9 @@ export class InkTransition {
     const gen = ++this.captureGen;
     this.capturing = true;
     try {
-      for (const theme of themes) {
+      for (const [n, theme] of themes.entries()) {
+        // One theme per idle slot: two shorter main-thread blocks instead of one long one.
+        if (n > 0) await idle();
         const snap = await capturePage(theme, scale, renderer.maxTextureSize, layers);
         if (gen !== this.captureGen || this.disposed) return;
         if (snap.key !== layoutKey(renderScale(), liveLayers())) {
@@ -469,6 +507,13 @@ export class InkTransition {
     }
     if (this.captureQueued) this.scheduleCapture(RESIZE_DEBOUNCE_MS);
   }
+}
+
+function idle(): Promise<void> {
+  return new Promise((resolve) => {
+    if ("requestIdleCallback" in window) window.requestIdleCallback(() => resolve(), { timeout: 1000 });
+    else setTimeout(resolve, 50);
+  });
 }
 
 function sameElements(a: HTMLElement[], b: HTMLElement[]): boolean {

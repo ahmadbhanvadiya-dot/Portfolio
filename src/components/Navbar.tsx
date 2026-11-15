@@ -93,7 +93,7 @@ export default function Navbar() {
   return (
     <header
       data-ink-layer
-      className={`fixed inset-x-0 top-0 z-50 bg-paper transition-[border-color] duration-300 border-b ${
+      className={`fixed inset-x-0 top-0 z-50 bg-paper transition-[border-color] duration-200 border-b ${
         scrolled || open ? "border-hairline" : "border-transparent"
       }`}
     >
@@ -103,13 +103,13 @@ export default function Navbar() {
       >
         <a
           href="#home"
-          className="group flex items-center gap-3"
+          className="group -m-2 flex items-center gap-3 p-2"
           aria-label={`${site.name}, back to top`}
           onClick={() => setOpen(false)}
         >
           <span
             aria-hidden="true"
-            className="grid h-7 w-7 place-items-center rounded-[3px] bg-ink font-mono text-[11px] font-medium tracking-tight text-paper transition-transform duration-500 ease-out-expo group-hover:-rotate-6"
+            className="grid h-7 w-7 place-items-center rounded-[3px] bg-ink font-mono text-[11px] font-medium tracking-tight text-paper transition-transform duration-200 ease-out group-hover:-rotate-6"
           >
             AB
           </span>
@@ -127,14 +127,14 @@ export default function Navbar() {
                   <a
                     href={`#${l.id}`}
                     aria-current={isActive ? "true" : undefined}
-                    className={`relative py-1 text-[14px] transition-colors duration-200 ${
+                    className={`relative py-2.5 text-[14px] transition-colors duration-150 ${
                       isActive ? "text-ink" : "text-graphite hover:text-ink"
                     }`}
                   >
                     <span
                       aria-hidden="true"
-                      className={`absolute -left-3 top-1/2 size-1 -translate-y-1/2 rounded-full bg-accent transition-[opacity,transform] duration-300 ${
-                        isActive ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                      className={`absolute -left-3 top-1/2 size-1 -translate-y-1/2 rounded-full bg-accent transition-[opacity,transform] duration-200 ease-out ${
+                        isActive ? "scale-100 opacity-100" : "scale-50 opacity-0"
                       }`}
                     />
                     {l.label}
@@ -149,7 +149,7 @@ export default function Navbar() {
           <button
             ref={menuButton}
             type="button"
-            className="-mr-2 flex h-9 items-center px-2 text-[14px] md:hidden"
+            className="press -mr-2 flex h-11 items-center px-2 text-[14px] md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((o) => !o)}
@@ -160,14 +160,16 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile menu */}
+      {/* Mobile menu: drops in under the bar (absolute, so the header's own box stays 56px). */}
       <div
         id="mobile-menu"
-        hidden={!open}
-        className="h-[calc(100dvh-3.5rem)] overflow-y-auto bg-paper px-5 pb-10 pt-6 sm:px-8 md:hidden"
+        data-open={open ? "" : undefined}
+        aria-hidden={!open}
+        className="menu-panel absolute inset-x-0 top-full h-[calc(100dvh-3.5rem)] overflow-y-auto bg-paper px-5 pb-10 pt-6 sm:px-8 md:hidden"
       >
         <ul className="flex flex-col">
           {navLinks.map((l, i) => (
-            <li key={l.id} className="enter border-b border-hairline" style={{ ["--i" as string]: i }}>
+            <li key={l.id} className="menu-item border-b border-hairline" style={{ ["--i" as string]: i }}>
               <a
                 ref={i === 0 ? firstLink : undefined}
                 href={`#${l.id}`}
@@ -184,14 +186,20 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <div className="mt-8 flex gap-6 font-mono text-[13px] text-graphite">
-          <a href={site.github} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
+        <div
+          className="menu-item mt-6 flex flex-wrap gap-x-6 font-mono text-[13px] text-graphite"
+          style={{ ["--i" as string]: navLinks.length }}
+        >
+          <a href={site.github} target="_blank" rel="noopener noreferrer" className="link py-3 hover:text-ink">
             GitHub
           </a>
-          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
+          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link py-3 hover:text-ink">
             LinkedIn
           </a>
-          <a href={`mailto:${site.email}`} className="link hover:text-ink">
+          <a href={site.resume} target="_blank" rel="noopener noreferrer" className="link py-3 hover:text-ink">
+            Résumé
+          </a>
+          <a href={`mailto:${site.email}`} className="link py-3 hover:text-ink">
             Email
           </a>
         </div>

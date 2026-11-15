@@ -8,18 +8,18 @@ colors:
   graphite: "#67645d"
   hairline: "#e0dcd3"
   hairline-strong: "#cdc8bd"
-  accent: "#2e43c4"
+  accent: "#2c3ec9"
   accent-ink: "#ffffff"
-  selection: "#d9ddf7"
+  selection: "#d8ddf8"
   paper-dark: "#121210"
   surface-dark: "#1b1a18"
   ink-dark: "#edebe5"
   graphite-dark: "#9b978e"
   hairline-dark: "#2a2926"
   hairline-strong-dark: "#3a3834"
-  accent-dark: "#95a3ff"
+  accent-dark: "#7f93ff"
   accent-ink-dark: "#121210"
-  selection-dark: "#2b3366"
+  selection-dark: "#262f6b"
 typography:
   display:
     fontFamily: "Schibsted Grotesk, ui-sans-serif, system-ui, sans-serif"
@@ -141,7 +141,7 @@ The system rejects gradients, neon glow, glassmorphism, large rounded cards, ski
 A near-monochrome warm palette, with a single cool ultramarine that only appears when something is live, active or being touched.
 
 ### Primary
-- **Ultramarine Signal** (light `accent`, dark `accent-dark`): the system's only colour. It is used for the availability dot, the active-nav dot, the focus outline, the selection tint (`selection`), the primary button's hover fill, the mailto link's hover colour, the hover colour of the Contact row arrows, and the Copied check. Text on an accent fill uses `accent-ink`.
+- **Ultramarine Signal** (light `accent`, dark `accent-dark`): the system's only colour. It is used for the availability dot, the active-nav dot, the focus outline, the selection tint (`selection`), the underline of the chosen skill, the mailto link's hover colour, the hover colour of the Contact row arrows, and the Copied check. One hue (about 232 degrees) in both themes: `#2c3ec9` on paper (7.2:1), `#7f93ff` on charcoal (6.7:1). Dark is the default theme. Text on an accent fill uses `accent-ink`.
 
 ### Neutral
 - **Warm Paper** (`paper` / `paper-dark`): page background, nav bar background, and the text colour on ink fills.
@@ -206,13 +206,13 @@ The form language is rectilinear and quiet. Framed objects (preview plates, butt
 
 ### Buttons
 - **Shape:** gently squared (4px).
-- **Primary:** an ink fill with paper text, 44px tall, padded 20px on the left and 16px on the right, set at 15px weight 500, with a trailing arrow icon. On hover it fills with accent and its text switches to accent-ink. The arrow nudges 2px in its direction of travel, and the button presses to 0.98 scale when active.
-- **Outline (Copy email):** transparent, with a 1px hairline-strong border, 36px tall, mono 12px in graphite. On hover the border and text turn ink. In the confirmed state a check icon appears in accent for 1.8s.
+- **Primary:** an ink fill with paper text, 44px tall, padded 20px on the left and 16px on the right, set at 15px weight 500, with a trailing arrow icon. On hover (fine pointers only) the fill steps a shade toward the ground (`--cta-hover`), the arrow nudges 2px in its direction of travel, and the button presses to 0.97 scale (160ms, `--ease-out`).
+- **Outline (Copy email):** transparent, with a 1px hairline-strong border, 44px tall, mono 12px in graphite. On hover the border and text turn ink. "Copy email" and "Copied" crossfade in place over 150ms with a 2px blur and 0.95 scale; the confirmed state holds for 1.8s with the check in accent.
 - **Icon (theme toggle):** a 36px square in graphite. On hover it gets a surface wash and ink text. The sun and moon cross-fade with a 90-degree rotation.
 
 ### Links
 - **Draw-in link (`.link`):** no underline at rest. A 1px currentColor underline grows from the left over 0.45s on hover or focus. It is used for mono metadata links and project Code / Live links.
-- **Present link (`.link-strong`):** underlined at rest. On hover the underline retracts to the right and redraws from the left over 0.5s. It is used for "Get in touch" and the email address, which also turns accent on hover.
+- **Present link (`.link-strong`):** rests on a hairline-strong underline; on hover an ink line draws over it from the left (200ms) and leaves to the right (120ms). It is used for "Get in touch" and the email address, which also turns accent on hover.
 
 ### Navigation
 A fixed 56px paper bar. It gains a hairline bottom border once the page scrolls past 8px. The left side carries the AB monogram tile (ink, mono 11px), which tilts -6 degrees on hover, followed by the name. Links are set at 14px in graphite. The active link turns ink and shows a 4px accent dot to its left, tracked by an IntersectionObserver on the middle band of the viewport. Below 768px a "Menu" text button opens a full-height paper sheet. The sheet lists the links at 2rem weight 500 between hairlines, followed by a mono link row.

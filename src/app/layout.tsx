@@ -39,14 +39,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f3ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#121210" },
-  ],
+  // Dark is the default theme; a visitor's own choice is restored before paint.
+  themeColor: "#121210",
+  colorScheme: "dark light",
 };
 
-// Runs before paint: applies a saved theme choice and flags JS for reveal motion.
-const themeScript = `(function(){try{var d=document.documentElement;d.classList.add('js');var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){d.setAttribute('data-theme',t)}}catch(e){}})();`;
+// Runs before paint: dark by default, or the visitor's saved choice; flags JS for motion.
+const themeScript = `(function(){var d=document.documentElement;d.classList.add('js');var t='dark';try{var s=localStorage.getItem('theme');if(s==='light'||s==='dark')t=s}catch(e){}d.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#121210':'#f5f3ee')})();`;
 
 export default function RootLayout({
   children,
