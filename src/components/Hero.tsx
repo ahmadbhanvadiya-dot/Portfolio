@@ -25,8 +25,11 @@ export default function Hero() {
     >
       <div className="flex flex-1 flex-col justify-center py-16 sm:py-24">
         <h1 className="max-w-[15ch] text-[clamp(2.5rem,7.4vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.04em]">
-          <span data-hero-name className="enter block" style={{ ["--i" as string]: 0 }}>
-            Ahmad Bhanvadiya.
+          <span className="enter block" style={{ ["--i" as string]: 0 }}>
+            {/* Travels into the navigation bar as the page scrolls (HeroTravel.tsx). */}
+            <span data-hero-name data-ink-layer="travel" className="hero-name">
+              Ahmad Bhanvadiya.
+            </span>
           </span>
           <span className="enter block text-graphite" style={{ ["--i" as string]: 1 }}>
             I build things you can open.

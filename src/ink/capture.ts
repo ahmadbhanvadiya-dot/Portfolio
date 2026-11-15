@@ -51,13 +51,16 @@ export function documentSize(): { width: number; height: number } {
  * ordered last so it wins where a scrolled sticky element passes beneath it.
  */
 export function liveLayers(): HTMLElement[] {
+  const rank = (el: HTMLElement) =>
+    el.dataset.inkLayer === "travel" ? 2 : getComputedStyle(el).position === "fixed" ? 1 : 0;
   const layers = Array.from(document.querySelectorAll<HTMLElement>("[data-ink-layer]")).filter((el) => {
+    // "travel": an element moved by script (the hero name flying into the bar), always a layer.
     const cs = getComputedStyle(el);
-    if (cs.position !== "sticky" && cs.position !== "fixed") return false;
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0;
+    if (el.dataset.inkLayer !== "travel" && cs.position !== "sticky" && cs.position !== "fixed") return false;
+    return el.offsetWidth > 0 && el.offsetHeight > 0;
   });
-  return layers.sort((a, b) => Number(getComputedStyle(a).position === "fixed") - Number(getComputedStyle(b).position === "fixed"));
+  // Drawn last = on top: sticky content, then the fixed bar, then the travelling name.
+  return layers.sort((a, b) => rank(a) - rank(b));
 }
 
 /**
@@ -68,8 +71,8 @@ export function layoutKey(scale: number, layers: HTMLElement[]): string {
   const { width, height } = documentSize();
   const sig = layers
     .map((el) => {
-      const r = el.getBoundingClientRect();
-      return `${Math.round(r.width)}x${Math.round(r.height)}`;
+      // Layout size, not the on-screen box: a travelling layer is scaled by transform.
+      return `${el.offsetWidth}x${el.offsetHeight}`;
     })
     .join(",");
   return `${width}x${height}@${scale}|${sig}`;
@@ -89,7 +92,8 @@ export async function capturePage(
   const all = Array.from(document.querySelectorAll<HTMLElement>("[data-ink-layer]"));
   const boxes = layers.map((el) => {
     const r = el.getBoundingClientRect();
-    return { index: all.indexOf(el), width: Math.ceil(r.width), height: Math.ceil(r.height) };
+    // Copies are captured at layout size; the shader maps a transformed live box onto them.
+    return { index: all.indexOf(el), width: Math.ceil(el.offsetWidth || r.width), height: Math.ceil(el.offsetHeight || r.height) };
   });
   const layerTops: number[] = [];
   let top = height + STRIP_GAP;
@@ -155,6 +159,15 @@ export async function capturePage(
         const wrapper = doc.createElement("div");
         wrapper.style.cssText = `position:absolute;left:0;top:${layerTops[i]}px;width:${b.width}px;height:${b.height}px;overflow:hidden;margin:0;padding:0`;
         const copy = original.cloneNode(true) as HTMLElement;
+        // Out of its parent, a copy loses inherited type; carry it over from the original.
+        const cs = doc.defaultView?.getComputedStyle(original);
+        if (cs) {
+          for (const prop of ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color"] as const) {
+            copy.style[prop] = cs[prop];
+          }
+        }
+        copy.style.transform = "none";
+        copy.style.opacity = "1";
         copy.style.position = "relative";
         copy.style.inset = "auto";
         copy.style.top = "auto";

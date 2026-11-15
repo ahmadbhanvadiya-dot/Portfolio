@@ -15,6 +15,9 @@ export interface LayerRect {
   y: number;
   width: number;
   height: number;
+  /** Size of the captured copy (the element's layout size, before any transform). */
+  copyWidth: number;
+  copyHeight: number;
 }
 
 interface ThemeTexture {
@@ -362,14 +365,17 @@ export class InkRenderer {
     const count = Math.min(this.layers.length, toTex?.layerTops.length ?? 0, fromTex ? fromTex.layerTops.length : MAX_LAYERS);
     const rects = new Float32Array(MAX_LAYERS * 4);
     const tops = new Float32Array(MAX_LAYERS * 2);
+    const scales = new Float32Array(MAX_LAYERS * 2);
     for (let i = 0; i < count; i++) {
       const r = this.layers[i]!;
       rects.set([r.x, r.y, r.width, r.height], i * 4);
       tops.set([fromTex?.layerTops[i] ?? 0, toTex?.layerTops[i] ?? 0], i * 2);
+      scales.set([r.width > 0 ? r.copyWidth / r.width : 1, r.height > 0 ? r.copyHeight / r.height : 1], i * 2);
     }
     gl.uniform1i(uniform("uLayerCount"), count);
     gl.uniform4fv(uniform("uLayerRect"), rects);
     gl.uniform2fv(uniform("uLayerTop"), tops);
+    gl.uniform2fv(uniform("uLayerScale"), scales);
     gl.uniform2f(uniform("uTexScale"), fromTex?.scale ?? 1, toTex?.scale ?? 1);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);

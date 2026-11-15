@@ -7,10 +7,9 @@ import ThemeToggle from "./ThemeToggle";
 export default function Navbar() {
   const [active, setActive] = useState<string>("home");
   const [scrolled, setScrolled] = useState(false);
-  // Continuity: the name moves into the bar once the hero's name has passed under it.
-  const [nameIn, setNameIn] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
   const firstLink = useRef<HTMLAnchorElement>(null);
   const pendingTarget = useRef<string | null>(null);
 
@@ -46,19 +45,8 @@ export default function Navbar() {
       return;
     }
     window.dispatchEvent(new CustomEvent("ink:dirty", { detail: { urgent: true } }));
-  }, [scrolled, nameIn]);
+  }, [scrolled]);
 
-  useEffect(() => {
-    const heroName = document.querySelector("[data-hero-name]");
-    if (!heroName) return;
-    // In view below the 56px bar = the hero shows the name; above it = the bar does.
-    const io = new IntersectionObserver(
-      ([e]) => setNameIn(!e.isIntersecting && e.boundingClientRect.top < 56),
-      { rootMargin: "-56px 0px 0px 0px" },
-    );
-    io.observe(heroName);
-    return () => io.disconnect();
-  }, []);
 
   // The ink snapshots don't include the open menu; the transition cross-fades instead.
   useEffect(() => {
@@ -88,6 +76,26 @@ export default function Navbar() {
     );
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
+  }, []);
+
+  // Origin-aware menu: the sheet is revealed from the Menu button's own box. The button's
+  // position is measured into the sheet's clip (on open, and on resize while open), so the
+  // reveal starts and ends exactly on the trigger at any viewport size.
+  const placeOrigin = () => {
+    const b = menuButton.current?.getBoundingClientRect();
+    const p = panel.current;
+    if (!b || !p) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    p.style.setProperty("--m-top", `${b.top}px`);
+    p.style.setProperty("--m-right", `${w - b.right}px`);
+    p.style.setProperty("--m-bottom", `${h - b.bottom}px`);
+    p.style.setProperty("--m-left", `${b.left}px`);
+  };
+  useEffect(() => {
+    placeOrigin();
+    window.addEventListener("resize", placeOrigin);
+    return () => window.removeEventListener("resize", placeOrigin);
   }, []);
 
   // Mobile menu: lock scroll, close on Escape or when widening past the breakpoint.
@@ -122,7 +130,7 @@ export default function Navbar() {
     >
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 sm:px-8 lg:px-10"
+        className="relative z-10 mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 sm:px-8 lg:px-10"
       >
         <a
           href="#home"
@@ -136,11 +144,9 @@ export default function Navbar() {
           >
             AB
           </span>
-          <span
-            data-in={nameIn ? "" : undefined}
-            className="nav-name text-[15px] font-medium tracking-[-0.01em]"
-          >
-            {site.name}
+          {/* The hero's name arrives here as the page scrolls (HeroTravel.tsx). */}
+          <span className="nav-name text-[15px] font-medium tracking-[-0.01em]">
+            {site.name}.
           </span>
         </a>
 
@@ -178,7 +184,10 @@ export default function Navbar() {
             className="press -mr-2 flex h-11 items-center px-2 text-[14px] md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
-            onClick={() => setOpen((o) => !o)}
+            onClick={() => {
+              placeOrigin();
+              setOpen((o) => !o);
+            }}
           >
             {open ? "Close" : "Menu"}
           </button>
@@ -191,7 +200,8 @@ export default function Navbar() {
         id="mobile-menu"
         data-open={open ? "" : undefined}
         aria-hidden={!open}
-        className="menu-panel absolute inset-x-0 top-full h-[calc(100dvh-3.5rem)] overflow-y-auto bg-paper px-5 pb-10 pt-6 sm:px-8 md:hidden"
+        ref={panel}
+        className="menu-panel fixed inset-x-0 top-0 h-[100dvh] overflow-y-auto bg-paper px-5 pb-10 pt-20 sm:px-8 md:hidden"
       >
         <ul className="flex flex-col">
           {navLinks.map((l, i) => (

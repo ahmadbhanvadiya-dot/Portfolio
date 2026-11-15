@@ -300,7 +300,14 @@ export class InkTransition {
   private layerRects(): LayerRect[] {
     return this.layers.map((el) => {
       const r = el.getBoundingClientRect();
-      return { x: r.left, y: r.top, width: r.width, height: r.height };
+      return {
+        x: r.left,
+        y: r.top,
+        width: r.width,
+        height: r.height,
+        copyWidth: el.offsetWidth || r.width,
+        copyHeight: el.offsetHeight || r.height,
+      };
     });
   }
 

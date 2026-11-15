@@ -66,6 +66,7 @@ const int MAX_LAYERS = 8;
 uniform int uLayerCount;
 uniform vec4 uLayerRect[MAX_LAYERS]; // live viewport box, CSS px (x, y, w, h)
 uniform vec2 uLayerTop[MAX_LAYERS];  // strip top, CSS px: (from snapshot, to snapshot)
+uniform vec2 uLayerScale[MAX_LAYERS]; // copy px per live px (1 unless the element is scaled)
 uniform vec2 uTexScale;              // texture px per CSS px: (from, to); theme snapshots only
 
 out vec4 outColor;
@@ -132,8 +133,10 @@ vec3 sampleDoc(sampler2D tex, vec2 size, vec4 map, vec2 devPx, int which) {
       vec2 local = css - r.xy;
       if (local.x >= 0.0 && local.y >= 0.0 && local.x < r.z && local.y < r.w) {
         float top = which == 0 ? uLayerTop[i].x : uLayerTop[i].y;
+        vec2 copySize = r.zw * uLayerScale[i];
+        local *= uLayerScale[i]; // a transformed live box maps back onto the unscaled copy
         vec2 hp = vec2(0.5 / texScale);
-        local = clamp(local, hp, r.zw - hp); // never bleed into the neighbouring copy
+        local = clamp(local, hp, copySize - hp); // never bleed into the neighbouring copy
         // Copies sit at x = 0 in the strip.
         vec2 texPx = vec2(local.x, top + local.y) * texScale;
         vec2 uvL = clamp(texPx, vec2(0.5), size - 0.5) / size;

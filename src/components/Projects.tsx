@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { projects, type Project } from "@/data/site";
 import { ArrowUpRight } from "./Icons";
+import { DragScroll } from "./dragScroll";
 import Section from "./Section";
 import TextMorph from "./TextMorph";
 
@@ -91,160 +92,72 @@ function Plate({ project, compact }: { project: Project; compact?: boolean }) {
 }
 
 /**
- * Scrubbing the real site: while the pointer is over the preview, its vertical position
- * scrolls the (tall) screenshot. Smoothed toward the pointer so it glides rather than
- * jumps; back to the top when the pointer leaves. Transform only.
+ * A screenshot of a live page in a frame you can drag through like a small browser
+ * (see dragScroll.ts for the physics). `onTap` handles a plain tap when the frame is not
+ * a link itself. Resets to the top while a theme transition runs, so it matches the ink
+ * snapshots.
  */
-function usePreviewScrub() {
-  const frameRef = useRef<HTMLAnchorElement>(null);
-  const target = useRef(0);
-  const current = useRef(0);
-  const raf = useRef(0);
-  const layer = useRef<HTMLElement | null>(null);
-
-  const apply = useCallback(() => {
-    const el = layer.current;
+function useDragScroll(
+  frameRef: React.RefObject<HTMLElement | null>,
+  opts: { chainToPage?: boolean; onTap?: () => void } = {},
+) {
+  const scroller = useRef<DragScroll | null>(null);
+  const onTap = useRef(opts.onTap);
+  useEffect(() => {
+    onTap.current = opts.onTap;
+  });
+  useEffect(() => {
     const frame = frameRef.current;
-    if (!el || !frame) return;
-    const max = Math.max(0, el.offsetHeight - frame.clientHeight);
-    el.style.transform = `translate3d(0, ${(-current.current * max).toFixed(1)}px, 0)`;
-    // The rail shows how much of the page is in view and where.
-    const thumb = frame.querySelector<HTMLElement>(".scrub-thumb");
-    if (thumb && el.offsetHeight > 0) {
-      const visible = Math.min(1, frame.clientHeight / el.offsetHeight);
-      thumb.style.height = `${(visible * 100).toFixed(2)}%`;
-      thumb.style.transform = `translate3d(0, ${((current.current * (1 - visible)) / visible) * 100}%, 0)`;
-    }
-  }, []);
-
-  const tick = useCallback(
-    function step(last: number) {
-      raf.current = requestAnimationFrame((now) => {
-        const dt = Math.min(0.05, (now - last) / 1000);
-        // Critically damped approach, ~120ms time constant.
-        current.current += (target.current - current.current) * (1 - Math.exp(-dt / 0.12));
-        if (Math.abs(target.current - current.current) < 0.0005) current.current = target.current;
-        apply();
-        if (current.current !== target.current) step(now);
-        else raf.current = 0;
-      });
-    },
-    [apply],
-  );
-
-  const setTarget = useCallback(
-    (value: number) => {
-      target.current = value;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        current.current = value;
-        apply();
-        return;
-      }
-      if (!raf.current) tick(performance.now());
-    },
-    [apply, tick],
-  );
-
-  /** Point the scrub at the active project's screenshot, starting from its top. */
-  const attach = useCallback(
-    (el: HTMLElement | null) => {
-      if (layer.current === el) return;
-      layer.current = el;
-      current.current = target.current = 0;
-      apply();
-    },
-    [apply],
-  );
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (e.pointerType !== "mouse") return;
-    const r = e.currentTarget.getBoundingClientRect();
-    // A margin at each end, so the top and the bottom of the page are easy to reach.
-    const p = ((e.clientY - r.top) / r.height - 0.12) / 0.76;
-    setTarget(Math.min(1, Math.max(0, p)));
-  };
-  const onPointerLeave = () => setTarget(0);
-
-  useEffect(() => () => cancelAnimationFrame(raf.current), []);
-
-  return { frameRef, attach, onPointerMove, onPointerLeave };
+    if (!frame) return;
+    const ds = new DragScroll(frame, {
+      chainToPage: opts.chainToPage,
+      onTap: () => onTap.current?.(),
+    });
+    ds.setTrack(frame.querySelector<HTMLElement>("[data-pan]"));
+    scroller.current = ds;
+    const reset = () => ds.reset();
+    window.addEventListener("ink:start", reset);
+    return () => {
+      window.removeEventListener("ink:start", reset);
+      ds.destroy();
+      scroller.current = null;
+    };
+  }, [frameRef, opts.chainToPage]);
+  return scroller;
 }
 
-/**
- * Below the large breakpoint there is no hover to scrub with, so each screenshot pans
- * through its live page as its card travels up the screen (scroll-driven; a vertical drag
- * would fight the page's own scroll). Smoothed a touch so it glides. While a theme
- * transition is running the screenshots rest at the top, matching the ink snapshots.
- */
-function useScrollPan(listRef: React.RefObject<HTMLOListElement | null>) {
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const narrow = window.matchMedia("(max-width: 1023px)");
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const tracks = Array.from(list.querySelectorAll<HTMLElement>(".pan-track"));
-    const current = new Map<HTMLElement, number>();
-    let raf = 0;
-    let last = 0;
-    let paused = false;
-
-    const targetOf = (track: HTMLElement) => {
-      if (paused || !narrow.matches || reduced.matches) return 0;
-      const frame = track.parentElement!;
-      const r = frame.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // 0 as the card's top reaches 85% of the screen, 1 by the time it reaches 25%.
-      return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.6)));
-    };
-
-    const frame = (now: number) => {
-      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
-      last = now;
-      let moving = false;
-      for (const track of tracks) {
-        const box = track.parentElement!;
-        const max = Math.max(0, track.offsetHeight - box.clientHeight);
-        const target = targetOf(track);
-        const prev = current.get(track) ?? 0;
-        const next = paused ? 0 : prev + (target - prev) * (1 - Math.exp(-dt / 0.09));
-        const settled = Math.abs(target - next) < 0.001 ? target : next;
-        if (settled !== target) moving = true;
-        current.set(track, settled);
-        track.style.transform = `translate3d(0, ${(-settled * max).toFixed(1)}px, 0)`;
-      }
-      raf = moving ? requestAnimationFrame(frame) : 0;
-      if (!moving) last = 0;
-    };
-    const kick = () => {
-      if (!raf) raf = requestAnimationFrame(frame);
-    };
-    const onStart = () => {
-      paused = true;
-      cancelAnimationFrame(raf);
-      raf = 0;
-      last = 0;
-      frame(performance.now());
-    };
-    const onEnd = () => {
-      paused = false;
-      kick();
-    };
-
-    window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick);
-    window.addEventListener("ink:start", onStart);
-    window.addEventListener("ink:end", onEnd);
-    narrow.addEventListener("change", kick);
-    kick();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", kick);
-      window.removeEventListener("resize", kick);
-      window.removeEventListener("ink:start", onStart);
-      window.removeEventListener("ink:end", onEnd);
-      narrow.removeEventListener("change", kick);
-    };
-  }, [listRef]);
+/** Inline preview below the large breakpoint: full width on phones, a thumbnail on tablets. */
+function InlineShot({ project, open }: { project: Project; open: () => void }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  useDragScroll(frameRef, { chainToPage: true, onTap: open });
+  if (!project.preview) {
+    return (
+      <div className="shot relative mb-6 hidden aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface sm:mb-0 sm:block lg:hidden">
+        <Plate project={project} compact />
+      </div>
+    );
+  }
+  return (
+    <div
+      ref={frameRef}
+      className="shot drag-frame relative z-10 mb-6 aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface sm:mb-0 lg:hidden"
+    >
+      <div data-pan className="will-change-transform">
+        <Image
+          src={project.preview.src}
+          alt=""
+          width={project.preview.width}
+          height={project.preview.height}
+          sizes="(min-width: 640px) 35vw, 100vw"
+          draggable={false}
+          className="shot__img block h-auto w-full"
+        />
+      </div>
+      <span className="scrub-rail" aria-hidden="true">
+        <span className="scrub-thumb" />
+      </span>
+    </div>
+  );
 }
 
 export default function Projects() {
@@ -253,12 +166,9 @@ export default function Projects() {
   const [hovering, setHovering] = useState(false);
   // Keyboard selection swaps the preview instantly: keyboard actions never animate.
   const [instant, setInstant] = useState(false);
-  // Direction-aware: moving down the list the next preview rises from below, moving up it
-  // comes down from above.
-  const [dir, setDir] = useState<"down" | "up">("down");
-  const { frameRef, attach, onPointerMove, onPointerLeave } = usePreviewScrub();
-  const listRef = useRef<HTMLOListElement>(null);
-  useScrollPan(listRef);
+  const frameRef = useRef<HTMLAnchorElement>(null);
+  const preview = useDragScroll(frameRef);
+  const rowLinks = useRef<(HTMLAnchorElement | null)[]>([]);
   const activeProject = projects[active];
 
   // The selected project shows in the sticky preview: tell the ink transition its
@@ -272,26 +182,54 @@ export default function Projects() {
     window.dispatchEvent(new Event("ink:dirty"));
   }, [active]);
 
-  // The wipe runs on the Web Animations API so each one starts from the edge it should
-  // (CSS would start from whatever clip the layer had before the direction changed).
+  // Connected, direction-aware switch (Web Animations API, so every run starts from the
+  // right edge whatever the previous direction was, and a rapid switch can settle the one
+  // in flight). The incoming preview is wiped in from the side it travels from while its
+  // page slides the last stretch into place; the outgoing page is pushed the other way and
+  // dims beneath it. Both share one duration and curve, so they read as one movement.
+  // Direction comes from the real indices: a higher index is further down the list.
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const wipe = useRef<Animation | null>(null);
+  const running = useRef<Animation[]>([]);
   useEffect(() => {
     if (prev === null) return;
-    const el = layerRefs.current[active];
-    wipe.current?.finish();
-    wipe.current = null;
-    if (!el || instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    wipe.current = el.animate(
-      [
-        { clipPath: dir === "down" ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" },
-        { clipPath: "inset(0 0 0 0)" },
-      ],
-      { duration: 380, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
-    );
-    // `prev`, `dir` and `instant` change together with `active`.
+    for (const a of running.current) a.cancel();
+    running.current = [];
+    const incoming = layerRefs.current[active];
+    const outgoing = layerRefs.current[prev];
+    if (!incoming || instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const down = active > prev;
+    const timing: KeyframeAnimationOptions = { duration: 320, easing: "cubic-bezier(0.23, 1, 0.32, 1)" };
+    const inMedia = incoming.querySelector<HTMLElement>(".preview-media");
+    const outMedia = outgoing?.querySelector<HTMLElement>(".preview-media");
+    running.current = [
+      incoming.animate(
+        [{ clipPath: down ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0 0)" }],
+        timing,
+      ),
+      ...(inMedia
+        ? [inMedia.animate([{ transform: `translateY(${down ? 14 : -14}%)` }, { transform: "none" }], timing)]
+        : []),
+      ...(outMedia
+        ? [
+            outMedia.animate(
+              [
+                { transform: "none", opacity: 1 },
+                { transform: `translateY(${down ? -10 : 10}%)`, opacity: 0.45 },
+              ],
+              timing,
+            ),
+          ]
+        : []),
+    ];
+    // `prev` and `instant` are set in the same update as `active`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
+  useEffect(() => () => running.current.forEach((a) => a.cancel()), []);
+
+  // The draggable page is always the active project's; a new project starts at its top.
+  useEffect(() => {
+    preview.current?.setTrack(layerRefs.current[active]?.querySelector<HTMLElement>("[data-pan]") ?? null);
+  }, [active, preview]);
 
   // Hover intent: a short pause before a row takes over, so a diagonal path toward the
   // preview doesn't switch projects on the way.
@@ -302,11 +240,21 @@ export default function Projects() {
     intent.current = window.setTimeout(() => select(i), 90);
   };
 
+  // Touch on a large screen has no hover to preview with: the first tap on a row shows its
+  // preview, a second tap opens it.
+  const lastPointer = useRef<string>("mouse");
+  const onRowNameClick = (e: React.MouseEvent, i: number) => {
+    const wide = window.matchMedia("(min-width: 1024px)").matches;
+    if (lastPointer.current === "touch" && wide && i !== active) {
+      e.preventDefault();
+      select(i);
+    }
+  };
+
   const select = (i: number, viaKeyboard = false) => {
     window.clearTimeout(intent.current);
     setInstant(viaKeyboard);
     if (i === active) return;
-    setDir(i > active ? "down" : "up");
     setPrev(active);
     setActive(i);
   };
@@ -316,11 +264,10 @@ export default function Projects() {
       id="work"
       wide
       title="Selected work"
-      aside="Things I've built, each with its source code and a live demo where there is one."
+      aside="Things I've built, each with its source code and a live demo where there is one. Drag a preview to look through the live site."
     >
       <div className="grid gap-x-12 lg:grid-cols-12">
         <ol
-          ref={listRef}
           data-work-list
           data-hovering={hovering ? "" : undefined}
           className="lg:col-span-5"
@@ -332,32 +279,15 @@ export default function Projects() {
               key={p.slug}
               data-active={active === i ? "" : undefined}
               className="work-row relative border-t border-hairline py-7 sm:py-8"
+              onPointerDown={(e) => {
+                lastPointer.current = e.pointerType;
+              }}
               onMouseEnter={() => hoverSelect(i)}
               onMouseLeave={() => window.clearTimeout(intent.current)}
               onFocus={(e) => select(i, e.target.matches(":focus-visible"))}
             >
               <div className="sm:grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-8 lg:block">
-                {/* Inline preview below the large breakpoint: full width on phones, a side thumbnail on tablets */}
-                <div
-                  className={`shot relative mb-6 aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface sm:mb-0 lg:hidden ${
-                    p.preview ? "" : "hidden sm:block"
-                  }`}
-                >
-                  {p.preview ? (
-                    <div data-pan className="pan-track will-change-transform">
-                      <Image
-                        src={p.preview.src}
-                        alt=""
-                        width={p.preview.width}
-                        height={p.preview.height}
-                        sizes="(min-width: 640px) 35vw, 100vw"
-                        className="shot__img block h-auto w-full"
-                      />
-                    </div>
-                  ) : (
-                    <Plate project={p} compact />
-                  )}
-                </div>
+                <InlineShot project={p} open={() => rowLinks.current[i]?.click()} />
                 <div>
                   <h3 className="flex flex-col gap-1.5">
                     {/* Stretched over the whole row: the row is one target. */}
@@ -365,6 +295,10 @@ export default function Projects() {
                       href={primaryHref(p)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      ref={(el) => {
+                        rowLinks.current[i] = el;
+                      }}
+                      onClick={(e) => onRowNameClick(e, i)}
                       className="work-name text-[clamp(1.625rem,3vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.035em] after:absolute after:inset-0 after:content-['']"
                     >
                       {p.name}
@@ -405,14 +339,11 @@ export default function Projects() {
               rel="noopener noreferrer"
               tabIndex={-1}
               data-instant={instant ? "" : undefined}
-              data-dir={dir}
-              onPointerMove={onPointerMove}
-              onPointerLeave={onPointerLeave}
-              className="shot relative block aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface shadow-[var(--shadow)]"
+              className="shot drag-frame relative block aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface shadow-[var(--shadow)]"
             >
               {projects.map((p, i) => {
-                // The incoming preview wipes over the outgoing one (which holds still beneath it),
-                // from below when moving down the list and from above when moving up.
+                // At rest: the active preview on top, the previous one beneath it (it is still
+                // visible while the incoming one wipes over it), the rest clipped away.
                 const state = i === active ? "in" : i === prev ? "under" : "out";
                 return (
                   <div
@@ -431,7 +362,6 @@ export default function Projects() {
                     {p.preview ? (
                       <div className="preview-media">
                         <div
-                          ref={i === active ? attach : undefined}
                           data-pan
                           className="will-change-transform"
                         >
@@ -441,6 +371,7 @@ export default function Projects() {
                             width={p.preview.width}
                             height={p.preview.height}
                             sizes="(min-width: 1200px) 640px, 56vw"
+                            draggable={false}
                             className="block h-auto w-full"
                           />
                         </div>
@@ -453,18 +384,16 @@ export default function Projects() {
                   </div>
                 );
               })}
-              {activeProject.preview && (
-                <span className="scrub-rail" aria-hidden="true">
-                  <span className="scrub-thumb" />
-                </span>
-              )}
+              <span className="scrub-rail" data-hidden={activeProject.preview ? undefined : ""} aria-hidden="true">
+                <span className="scrub-thumb" />
+              </span>
             </a>
             <div className="mt-4 flex items-baseline justify-between gap-6 font-mono text-[12px] text-graphite">
               <TextMorph parts={activeProject.name} className="text-ink" />
               <TextMorph
                 parts={
                   activeProject.preview
-                    ? "Move down the preview to scroll the site, click to open it"
+                    ? "Drag the preview to explore the site, click to open it"
                     : activeProject.live
                       ? "Click to open the live demo"
                       : "Click to open the code"

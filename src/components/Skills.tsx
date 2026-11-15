@@ -64,7 +64,7 @@ export default function Skills() {
       {/* Sticky on phones so the answer is on screen wherever the tapped skill is. */}
       <p
         aria-live="polite"
-        className="sticky bottom-0 z-10 mt-12 border-t border-hairline bg-paper py-4 text-[15px] leading-relaxed text-graphite sm:static sm:bg-transparent sm:pb-0"
+        className="sticky bottom-0 z-10 mt-12 min-h-[5.5rem] border-t border-hairline bg-paper py-4 text-[15px] leading-relaxed text-graphite sm:static sm:min-h-0 sm:bg-transparent sm:pb-0"
       >
         <TextMorph
           parts={
