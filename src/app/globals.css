@@ -1,36 +1,189 @@
 @import "tailwindcss";
 
+/* ---------- Tokens ---------- */
+
+:root {
+  --paper: #f5f3ee;
+  --surface: #ece9e2;
+  --ink: #161513;
+  --graphite: #67645d;
+  --hairline: #e0dcd3;
+  --hairline-strong: #cdc8bd;
+  --accent: #2e43c4;
+  --accent-ink: #ffffff;
+  --selection: #d9ddf7;
+  --shadow: 0 1px 2px rgb(22 21 19 / 0.04), 0 12px 32px -12px rgb(22 21 19 / 0.18);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121210;
+    --surface: #1b1a18;
+    --ink: #edebe5;
+    --graphite: #9b978e;
+    --hairline: #2a2926;
+    --hairline-strong: #3a3834;
+    --accent: #95a3ff;
+    --accent-ink: #121210;
+    --selection: #2b3366;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #121210;
+  --surface: #1b1a18;
+  --ink: #edebe5;
+  --graphite: #9b978e;
+  --hairline: #2a2926;
+  --hairline-strong: #3a3834;
+  --accent: #95a3ff;
+  --accent-ink: #121210;
+  --selection: #2b3366;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Base ---------- */
+
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: radial-gradient(circle at top, #2e0b51, #000000 65%);
-  color: white;
-  overflow-x: hidden;
-
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("https://grainy-gradients.vercel.app/noise.svg");
-  opacity: 0.15;
-  pointer-events: none;
+::selection {
+  background: var(--selection);
+  color: var(--ink);
 }
 
-
-.glow {
-  box-shadow: 0 0 120px rgba(255, 255, 255, 0.35);
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-.glow-hover {
-  transition: 0.5s ease;
+html {
+  scrollbar-color: var(--hairline-strong) var(--paper);
 }
 
-.glow-hover:hover {
-  box-shadow: 0 0 140px rgba(255, 255, 255, 0.35);
-  transform: translateY(-6px);
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ---------- Links ---------- */
+
+/* Underline that draws in from the left on hover. */
+.link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition:
+    background-size 0.45s var(--ease-out-expo),
+    color 0.2s ease;
+}
+.link:hover,
+.link:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Underline that is present, and retracts then redraws on hover. */
+.link-strong {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition:
+    background-size 0.5s var(--ease-out-expo),
+    color 0.2s ease;
+}
+.link-strong:hover {
+  background-size: 0% 1px;
+  background-position: 0 100%;
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.enter {
+  animation: rise 1s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+}
+
+/* Reveal only runs when JS is present; content is visible by default. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
 }

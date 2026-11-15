@@ -8,35 +8,29 @@ https://portfolio-ahmadbhanvadiya.vercel.app/
 
 ## ✨ Features
 
-- Modern responsive design
-- Interactive particle background
-- Smooth scrolling navigation
-- About Me section
-- Featured Projects showcase
-- Skills & Technologies section
-- Contact links for GitHub, LinkedIn, and Email
-- Resume download support
-- Built with modern web technologies
+- Minimal, typographic single-page layout
+- Light and dark themes (follows the system, remembers a manual choice)
+- Selected Work index with live-demo previews
+- Responsive from phone to wide desktop, keyboard accessible, respects reduced motion
+- Open Graph image and SEO metadata
 
 ## 🛠️ Tech Stack
 
-- Next.js
-- React
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
-- Tailwind CSS
-- Framer Motion
+- Tailwind CSS v4
 - Vercel
+
+Project content (projects, skills, links) lives in `src/data/site.ts`. Project previews in `public/work/` are screenshots of each project's live demo.
 
 ## 📂 Featured Projects
 
-### Freshlify
-A QR-powered platform that enables consumers to instantly access product information, ingredients, nutritional data, and transparency insights.
-
-### Vitl
-A digital health profile platform that allows users to securely store and access important medical information through QR technology.
-
-### Meridian Restro
-A modern restaurant website featuring menu showcases, reservations, and responsive user experiences.
+- **SmartCommute AI**: transit route planning on TGSRTC GTFS data plus freight-route optimisation (Smart India Hackathon)
+- **NarcoLens**: digital companion for field drug-test documentation and image analysis
+- **Vitl**: digital health profile accessible by QR code
+- **Freshlify**: Flutter app for tracking product freshness and expiry
+- **The Meridian Restro**: responsive restaurant website
 
 ## 🎯 About Me
 

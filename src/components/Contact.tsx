@@ -1,80 +1,64 @@
-"use client";
+import { site } from "@/data/site";
+import CopyEmail from "./CopyEmail";
+import { ArrowUpRight } from "./Icons";
 
-import { motion } from "framer-motion";
+const elsewhere = [
+  { label: "GitHub", handle: "ahmadbhanvadiya-dot", href: site.github },
+  { label: "LinkedIn", handle: "ahmad-bhanvadia-03e10", href: site.linkedin },
+  { label: "Résumé", handle: "PDF", href: site.resume },
+];
 
 export default function Contact() {
   return (
-    <motion.section
-  id="contact"
-  initial={{ opacity: 0, y: 40 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.5 }}
->
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold">
-          Let's Connect
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-10"
+    >
+      <div className="border-t border-hairline pb-24 pt-16 sm:pb-32 sm:pt-20">
+        <h2
+          id="contact-title"
+          className="max-w-[14ch] text-[clamp(2.5rem,6.6vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em]"
+        >
+          Have something interesting in mind?
         </h2>
-
-        <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-          I'm always interested in collaborating on projects, hackathons,
-          internships, and exciting opportunities in tech.
+        <p className="mt-8 max-w-[46ch] text-[1.0625rem] leading-relaxed text-graphite sm:text-[1.25rem] sm:leading-[1.55]">
+          I&apos;m always interested in building useful things, exploring new ideas, and
+          connecting with people who enjoy creating.
         </p>
+
+        <div className="mt-12 flex flex-col items-start gap-5 sm:mt-16 sm:flex-row sm:flex-wrap sm:items-center sm:gap-8">
+          <a
+            href={`mailto:${site.email}`}
+            className="link-strong break-all text-[clamp(1.25rem,3.4vw,2.25rem)] font-medium tracking-[-0.03em] transition-colors hover:text-accent"
+          >
+            {site.email}
+          </a>
+          <CopyEmail email={site.email} />
+        </div>
+
+        <ul className="mt-16 grid border-t border-hairline sm:mt-20 sm:grid-cols-3">
+          {elsewhere.map((l) => (
+            <li key={l.label} className="border-b border-hairline sm:border-b-0">
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between py-5 sm:pr-8"
+              >
+                <span>
+                  <span className="block text-[15px] font-medium">{l.label}</span>
+                  <span className="mt-0.5 block font-mono text-[12px] text-graphite">{l.handle}</span>
+                </span>
+                <ArrowUpRight
+                  size={18}
+                  className="text-graphite transition-[transform,color] duration-500 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="grid md:grid-cols-3 gap-6"
-      >
-        {/* GitHub */}
-        <a
-          href="https://github.com/ahmadbhanvadiya-dot"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-6 rounded-2xl border border-purple-500/20 bg-white/5 backdrop-blur-md glow-hover text-center"
-        >
-          <h3 className="text-xl font-semibold mb-2">
-            GitHub
-          </h3>
-
-          <p className="text-gray-400 text-sm">
-            Explore my projects and open-source work.
-          </p>
-        </a>
-
-        {/* LinkedIn */}
-        <a
-          href="https://www.linkedin.com/in/ahmad-bhanvadia-03e10"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-6 rounded-2xl border border-purple-500/20 bg-white/5 backdrop-blur-md glow-hover text-center"
-        >
-          <h3 className="text-xl font-semibold mb-2">
-            LinkedIn
-          </h3>
-
-          <p className="text-gray-400 text-sm">
-            Connect with me professionally.
-          </p>
-        </a>
-
-        {/* Email */}
-        <a
-          href="mailto:bhanvadiyaahmad@gmail.com"
-          className="p-6 rounded-2xl border border-purple-500/20 bg-white/5 backdrop-blur-md glow-hover text-center"
-        >
-          <h3 className="text-xl font-semibold mb-2">
-            Email
-          </h3>
-
-          <p className="text-gray-400 text-sm">
-            bhanvadiyaahmad@gmail.com
-          </p>
-        </a>
-      </motion.div>
-    </motion.section>
+    </section>
   );
 }

@@ -1,37 +1,27 @@
+import { site } from "@/data/site";
+import { ArrowUp } from "./Icons";
+import Year from "./Year";
+
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 mt-32">
-      <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center">
-        <p className="text-gray-500 text-sm">
-          © 2026 Ahmad Bhanvadiya. All rights reserved.
+    <footer className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-10">
+      <div className="flex flex-col gap-5 border-t border-hairline py-8 text-[13px] text-graphite sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          <span className="text-ink">{site.name}</span> © <Year />
         </p>
-
-        <div className="flex gap-6 mt-4 md:mt-0">
-
-          <a
-            href="https://www.instagram.com/ahmad.bhanvadia/?hl=en"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white"
-          >
-            Insta
-          </a>
-          <a
-            href="https://github.com/ahmadbhanvadiya-dot"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white"
-          >
+        <div className="flex items-center gap-6 font-mono">
+          <a href={site.github} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
             GitHub
           </a>
-
-          <a
-            href="https://www.linkedin.com/in/ahmad-bhanvadia-03e10"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white"
-          >
+          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link hover:text-ink">
             LinkedIn
+          </a>
+          <a href="#home" className="group ml-auto inline-flex items-center gap-1.5 hover:text-ink sm:ml-4">
+            Back to top
+            <ArrowUp
+              size={13}
+              className="transition-transform duration-500 ease-out-expo group-hover:-translate-y-0.5"
+            />
           </a>
         </div>
       </div>

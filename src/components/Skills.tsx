@@ -1,53 +1,23 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { skills } from "@/data/site";
+import Section from "./Section";
 
 export default function Skills() {
-  const skills = [
-    "Python",
-    "JavaScript",
-    "TypeScript",
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Node.js",
-    "Git",
-  ];
-
   return (
-    <section
-  id="skills"
-  className="max-w-6xl mx-auto px-6 py-32"
->
-
-      <div className="text-center mb-16">
-  <h2 className="text-4xl font-bold">
-    Skills & Technologies
-  </h2>
-
-  <p className="mt-4 text-gray-400">
-    Tools and technologies I use to build modern applications.
-  </p>
-</div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-
-        {skills.map((skill, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            whileHover={{ scale: 1.05 }}
-          className="p-4 rounded-xl border border-purple-500/20 bg-white/5 backdrop-blur-md shadow-lg glow-hover"
-          >
-            {skill}
-          </motion.div>
+    <Section id="skills" title="Skills" aside="What I work with, grouped by where it sits in a project.">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
+        {skills.map((s) => (
+          <div key={s.group}>
+            <h3 className="border-b border-hairline pb-3 font-mono text-[12px] text-graphite">
+              {s.group}
+            </h3>
+            <ul className="mt-4 space-y-2 text-[16px] tracking-[-0.01em]">
+              {s.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
         ))}
-
       </div>
-
-    </section>
+    </Section>
   );
 }
