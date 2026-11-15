@@ -76,7 +76,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {
@@ -136,6 +135,20 @@ p {
   background-position: 0 100%;
 }
 
+/* ---------- Work index hover (driven by data attributes so snapshots can drop it) ---------- */
+
+.work-name {
+  transform: translateX(0);
+}
+@media (min-width: 1024px) {
+  [data-work-list][data-hovering] li:not([data-active]) .work-name {
+    color: var(--graphite);
+  }
+  [data-work-list][data-hovering] li[data-active] .work-name {
+    transform: translateX(0.375rem);
+  }
+}
+
 /* ---------- Motion ---------- */
 
 @keyframes rise {
@@ -186,4 +199,82 @@ p {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---------- Ink bleed theme transition (src/ink) ---------- */
+
+.ink-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  visibility: hidden;
+}
+.ink-canvas.is-active {
+  visibility: visible;
+}
+
+/* Stand-in for the toggle above the overlay (the real one is inside the header's stacking context). */
+.ink-proxy {
+  position: fixed;
+  z-index: 1001;
+  display: none;
+  place-items: center;
+  pointer-events: none;
+}
+.ink-proxy.is-active {
+  display: grid;
+}
+.ink-proxy.is-focused {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.theme-toggle {
+  /* No colour transitions: the ink hands the button its new colours. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ink-icon {
+  overflow: visible;
+  transform-origin: 50% 50%;
+}
+/* Shown once the controller has put it in the right pose (avoids a sun flash in dark mode). */
+.theme-toggle:not([data-ready]) .ink-icon {
+  opacity: 0;
+}
+.ink-icon__body {
+  fill: currentColor;
+}
+.ink-icon__rays line {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+}
+
+/* CSS fallback: no WebGL2, reduced motion, menu open, or snapshots not ready yet.
+   Only applied for the duration of a flip so it never leaks into snapshots. */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition:
+    background-color var(--theme-fade, 0.45s) ease,
+    border-color var(--theme-fade, 0.45s) ease,
+    color var(--theme-fade, 0.45s) ease,
+    fill var(--theme-fade, 0.45s) ease,
+    stroke var(--theme-fade, 0.45s) ease,
+    box-shadow var(--theme-fade, 0.45s) ease !important;
+}
+
+/* html2canvas measures font baselines with this 1×1 GIF placed inline after a text span.
+   Tailwind's preflight makes every img display:block, which pushes it onto its own line and
+   shifts all snapshot text downwards. Only that probe image matches this selector. */
+img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] {
+  display: inline !important;
 }

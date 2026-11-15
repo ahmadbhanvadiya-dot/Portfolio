@@ -17,7 +17,7 @@ export default function Section({ id, title, aside, children }: SectionProps) {
     >
       <div className="grid gap-y-10 border-t border-hairline pb-24 pt-6 sm:pb-32 lg:grid-cols-12 lg:gap-x-10">
         <div className="lg:col-span-3">
-          <div className="lg:sticky lg:top-24">
+          <div className="lg:sticky lg:top-24" data-ink-layer>
             <h2 id={`${id}-title`} className="text-[15px] font-medium tracking-[-0.01em]">
               {title}
             </h2>

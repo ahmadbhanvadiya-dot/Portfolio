@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { projects, type Project } from "@/data/site";
 import { ArrowUpRight } from "./Icons";
 import Section from "./Section";
@@ -94,6 +94,17 @@ export default function Projects() {
   const listRef = useRef<HTMLOListElement>(null);
   useReveal(listRef);
 
+  // The selected project shows in the sticky preview: tell the ink transition its
+  // snapshots are out of date (it refreshes them once the visitor is idle).
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    window.dispatchEvent(new Event("ink:dirty"));
+  }, [active]);
+
   const select = (i: number) => {
     if (i === active) return;
     setPrev(active);
@@ -109,17 +120,19 @@ export default function Projects() {
       <div className="grid gap-x-10 lg:grid-cols-9">
         <ol
           ref={listRef}
+          data-work-list
+          data-hovering={hovering ? "" : undefined}
           className="lg:col-span-5"
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
         >
           {projects.map((p, i) => {
             const isActive = active === i;
-            const dim = hovering && !isActive;
             return (
               <li
                 key={p.slug}
                 data-reveal
+                data-active={isActive ? "" : undefined}
                 style={{ ["--i" as string]: i }}
                 className="border-t border-hairline py-7 sm:py-8"
                 onMouseEnter={() => select(i)}
@@ -135,9 +148,7 @@ export default function Projects() {
                   <div>
                     <div className="flex flex-col gap-1.5">
                       <h3
-                        className={`whitespace-nowrap text-[clamp(1.625rem,3vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.035em] transition-[color,transform] duration-500 ease-out-expo ${
-                          dim ? "lg:text-graphite" : ""
-                        } ${isActive && hovering ? "lg:translate-x-1.5" : ""}`}
+                        className="work-name whitespace-nowrap text-[clamp(1.625rem,3vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.035em] transition-[color,transform] duration-500 ease-out-expo"
                       >
                         {p.name}
                       </h3>
@@ -164,7 +175,7 @@ export default function Projects() {
 
         {/* Sticky preview frame on large screens */}
         <div className="hidden lg:col-span-4 lg:block" aria-hidden="true">
-          <div className="sticky top-24">
+          <div className="sticky top-24" data-ink-layer>
             <div className="relative aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface shadow-[var(--shadow)]">
               {projects.map((p, i) => {
                 // The incoming preview wipes up over the outgoing one, which holds still beneath it.

@@ -27,6 +27,23 @@ export default function Navbar() {
     history.replaceState(null, "", `#${id}`);
   }, [open]);
 
+  // The header is in the ink snapshots: report state that changes it without a layout change.
+  const firstNavState = useRef(true);
+  useEffect(() => {
+    if (firstNavState.current) {
+      firstNavState.current = false;
+      return;
+    }
+    window.dispatchEvent(new Event("ink:dirty"));
+  }, [active, scrolled]);
+
+  // The ink snapshots don't include the open menu; the transition cross-fades instead.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (open) root.dataset.menu = "open";
+    else delete root.dataset.menu;
+  }, [open]);
+
   // Hairline under the bar once the page has moved.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -75,6 +92,7 @@ export default function Navbar() {
 
   return (
     <header
+      data-ink-layer
       className={`fixed inset-x-0 top-0 z-50 bg-paper transition-[border-color] duration-300 border-b ${
         scrolled || open ? "border-hairline" : "border-transparent"
       }`}

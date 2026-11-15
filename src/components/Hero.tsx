@@ -11,6 +11,7 @@ export default function Hero() {
   return (
     <section
       id="home"
+      data-ink-fixh
       className="mx-auto mb-14 flex min-h-[100svh] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
     >
       <div className="flex flex-1 flex-col justify-center py-16 sm:py-24">
