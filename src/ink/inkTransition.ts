@@ -136,8 +136,11 @@ export class InkTransition {
     this.listen(this.reducedMotion, "change", () => this.scheduleCapture(0));
     // Components announce content that changed without a layout change (active nav link,
     // selected project). Refresh once the visitor has been idle for a moment.
-    this.listen(window, "ink:dirty", () => {
+    // `detail.urgent` (header state a visitor sees on every toggle) skips the refresh
+    // interval but still waits for the visitor to be idle.
+    this.listen(window, "ink:dirty", (e) => {
       this.contentDirty = true;
+      if ((e as CustomEvent<{ urgent?: boolean }>).detail?.urgent) this.lastRefresh = 0;
       this.armIdleRefresh();
     });
     for (const type of ["scroll", "pointermove", "keydown", "touchstart", "wheel"]) {
@@ -238,6 +241,8 @@ export class InkTransition {
     renderer.canvas.style.opacity = "1";
     renderer.canvas.classList.add("is-active");
     this.proxy.classList.add("is-active");
+    // Live movers (panning screenshots) rest in their snapshot pose until the overlay lifts.
+    if (!interrupting) window.dispatchEvent(new Event("ink:start"));
     applyTheme(to, this.button);
     this.icon.set(to); // the real icon is under the overlay; it waits in its final pose
 
@@ -316,8 +321,10 @@ export class InkTransition {
   }
 
   private hide(): void {
+    const wasActive = this.frame !== null;
     this.fade = null;
     this.frame = null;
+    if (wasActive) window.dispatchEvent(new Event("ink:end"));
     this.proxyIcon?.kill();
     this.proxy.classList.remove("is-active");
     this.proxy.style.opacity = "";

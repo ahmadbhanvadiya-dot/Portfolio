@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { projects, type Project } from "@/data/site";
 import { ArrowUpRight } from "./Icons";
 import Section from "./Section";
+import TextMorph from "./TextMorph";
 
 /** Where a project's name and preview lead: the live demo when there is one, else the code. */
 const primaryHref = (p: Project) => p.live ?? p.github;
@@ -169,13 +170,95 @@ function usePreviewScrub() {
   return { frameRef, attach, onPointerMove, onPointerLeave };
 }
 
+/**
+ * Below the large breakpoint there is no hover to scrub with, so each screenshot pans
+ * through its live page as its card travels up the screen (scroll-driven; a vertical drag
+ * would fight the page's own scroll). Smoothed a touch so it glides. While a theme
+ * transition is running the screenshots rest at the top, matching the ink snapshots.
+ */
+function useScrollPan(listRef: React.RefObject<HTMLOListElement | null>) {
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const narrow = window.matchMedia("(max-width: 1023px)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const tracks = Array.from(list.querySelectorAll<HTMLElement>(".pan-track"));
+    const current = new Map<HTMLElement, number>();
+    let raf = 0;
+    let last = 0;
+    let paused = false;
+
+    const targetOf = (track: HTMLElement) => {
+      if (paused || !narrow.matches || reduced.matches) return 0;
+      const frame = track.parentElement!;
+      const r = frame.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 as the card's top reaches 85% of the screen, 1 by the time it reaches 25%.
+      return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.6)));
+    };
+
+    const frame = (now: number) => {
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+      last = now;
+      let moving = false;
+      for (const track of tracks) {
+        const box = track.parentElement!;
+        const max = Math.max(0, track.offsetHeight - box.clientHeight);
+        const target = targetOf(track);
+        const prev = current.get(track) ?? 0;
+        const next = paused ? 0 : prev + (target - prev) * (1 - Math.exp(-dt / 0.09));
+        const settled = Math.abs(target - next) < 0.001 ? target : next;
+        if (settled !== target) moving = true;
+        current.set(track, settled);
+        track.style.transform = `translate3d(0, ${(-settled * max).toFixed(1)}px, 0)`;
+      }
+      raf = moving ? requestAnimationFrame(frame) : 0;
+      if (!moving) last = 0;
+    };
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+    const onStart = () => {
+      paused = true;
+      cancelAnimationFrame(raf);
+      raf = 0;
+      last = 0;
+      frame(performance.now());
+    };
+    const onEnd = () => {
+      paused = false;
+      kick();
+    };
+
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    window.addEventListener("ink:start", onStart);
+    window.addEventListener("ink:end", onEnd);
+    narrow.addEventListener("change", kick);
+    kick();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", kick);
+      window.removeEventListener("ink:start", onStart);
+      window.removeEventListener("ink:end", onEnd);
+      narrow.removeEventListener("change", kick);
+    };
+  }, [listRef]);
+}
+
 export default function Projects() {
   const [active, setActive] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
   const [hovering, setHovering] = useState(false);
   // Keyboard selection swaps the preview instantly: keyboard actions never animate.
   const [instant, setInstant] = useState(false);
+  // Direction-aware: moving down the list the next preview rises from below, moving up it
+  // comes down from above.
+  const [dir, setDir] = useState<"down" | "up">("down");
   const { frameRef, attach, onPointerMove, onPointerLeave } = usePreviewScrub();
+  const listRef = useRef<HTMLOListElement>(null);
+  useScrollPan(listRef);
   const activeProject = projects[active];
 
   // The selected project shows in the sticky preview: tell the ink transition its
@@ -187,6 +270,27 @@ export default function Projects() {
       return;
     }
     window.dispatchEvent(new Event("ink:dirty"));
+  }, [active]);
+
+  // The wipe runs on the Web Animations API so each one starts from the edge it should
+  // (CSS would start from whatever clip the layer had before the direction changed).
+  const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const wipe = useRef<Animation | null>(null);
+  useEffect(() => {
+    if (prev === null) return;
+    const el = layerRefs.current[active];
+    wipe.current?.finish();
+    wipe.current = null;
+    if (!el || instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    wipe.current = el.animate(
+      [
+        { clipPath: dir === "down" ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" },
+        { clipPath: "inset(0 0 0 0)" },
+      ],
+      { duration: 380, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
+    );
+    // `prev`, `dir` and `instant` change together with `active`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   // Hover intent: a short pause before a row takes over, so a diagonal path toward the
@@ -202,6 +306,7 @@ export default function Projects() {
     window.clearTimeout(intent.current);
     setInstant(viaKeyboard);
     if (i === active) return;
+    setDir(i > active ? "down" : "up");
     setPrev(active);
     setActive(i);
   };
@@ -215,6 +320,7 @@ export default function Projects() {
     >
       <div className="grid gap-x-12 lg:grid-cols-12">
         <ol
+          ref={listRef}
           data-work-list
           data-hovering={hovering ? "" : undefined}
           className="lg:col-span-5"
@@ -238,13 +344,16 @@ export default function Projects() {
                   }`}
                 >
                   {p.preview ? (
-                    <Image
-                      src={p.preview.src}
-                      alt=""
-                      fill
-                      sizes="(min-width: 640px) 35vw, 100vw"
-                      className="shot__img object-cover object-top"
-                    />
+                    <div data-pan className="pan-track will-change-transform">
+                      <Image
+                        src={p.preview.src}
+                        alt=""
+                        width={p.preview.width}
+                        height={p.preview.height}
+                        sizes="(min-width: 640px) 35vw, 100vw"
+                        className="shot__img block h-auto w-full"
+                      />
+                    </div>
                   ) : (
                     <Plate project={p} compact />
                   )}
@@ -296,16 +405,21 @@ export default function Projects() {
               rel="noopener noreferrer"
               tabIndex={-1}
               data-instant={instant ? "" : undefined}
+              data-dir={dir}
               onPointerMove={onPointerMove}
               onPointerLeave={onPointerLeave}
               className="shot relative block aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface shadow-[var(--shadow)]"
             >
               {projects.map((p, i) => {
-                // The incoming preview wipes up over the outgoing one, which holds still beneath it.
+                // The incoming preview wipes over the outgoing one (which holds still beneath it),
+                // from below when moving down the list and from above when moving up.
                 const state = i === active ? "in" : i === prev ? "under" : "out";
                 return (
                   <div
                     key={p.slug}
+                    ref={(el) => {
+                      layerRefs.current[i] = el;
+                    }}
                     className={`preview-layer absolute inset-0 overflow-hidden bg-surface ${
                       state === "in" ? "is-in" : ""
                     }`}
@@ -318,6 +432,7 @@ export default function Projects() {
                       <div className="preview-media">
                         <div
                           ref={i === active ? attach : undefined}
+                          data-pan
                           className="will-change-transform"
                         >
                           <Image
@@ -345,14 +460,16 @@ export default function Projects() {
               )}
             </a>
             <div className="mt-4 flex items-baseline justify-between gap-6 font-mono text-[12px] text-graphite">
-              <span className="text-ink">{activeProject.name}</span>
-              <span>
-                {activeProject.preview
-                  ? "Move down the preview to scroll the site, click to open it"
-                  : activeProject.live
-                    ? "Click to open the live demo"
-                    : "Click to open the code"}
-              </span>
+              <TextMorph parts={activeProject.name} className="text-ink" />
+              <TextMorph
+                parts={
+                  activeProject.preview
+                    ? "Move down the preview to scroll the site, click to open it"
+                    : activeProject.live
+                      ? "Click to open the live demo"
+                      : "Click to open the code"
+                }
+              />
             </div>
           </div>
         </div>

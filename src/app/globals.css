@@ -300,9 +300,6 @@ p {
 
 /* The incoming preview wipes up over the outgoing one and settles from a slight zoom,
    so the change reads as one surface turning over rather than two images swapping. */
-.preview-layer.is-in {
-  transition: clip-path 380ms var(--ease-out);
-}
 .preview-layer .preview-media {
   transform: scale(1.04);
   transform-origin: 50% 0;
@@ -343,12 +340,70 @@ button.skill {
   }
 }
 
+/* ---------- Text morph (TextMorph.tsx) ---------- */
+
+.morph {
+  position: relative;
+  display: inline-block;
+}
+.morph-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.morph-char {
+  display: inline-block;
+  animation: char-in 260ms var(--ease-out) both;
+  animation-delay: calc(var(--c, 0) * 10ms);
+}
+.morph-out {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: line-out 160ms ease-out both;
+}
+@keyframes char-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(2px);
+  }
+}
+@keyframes line-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.3em);
+    filter: blur(2px);
+  }
+}
+
+/* ---------- Nav name: arrives in the bar as the hero's name leaves under it ---------- */
+
+.nav-name {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 160ms ease,
+    transform 200ms var(--ease-out);
+}
+.nav-name[data-in] {
+  opacity: 1;
+  transform: none;
+  transition-duration: 260ms, 320ms;
+}
+
+/* The preview settles toward the edge it came in from. */
+.shot[data-dir="up"] .preview-layer .preview-media {
+  transform-origin: 50% 100%;
+}
+
 /* ---------- Mobile menu ---------- */
 
 .menu-panel {
   visibility: hidden;
   opacity: 0;
-  transform: translateY(-6px);
+  /* Origin-aware: the sheet grows out of the Menu button (top right), not its own centre. */
+  transform-origin: calc(100% - 2.25rem) 0;
+  transform: scale(0.96);
   transition:
     opacity 140ms ease,
     transform 140ms var(--ease-out),
@@ -462,6 +517,17 @@ button.skill {
   }
   .preview-layer.is-in {
     transition: none;
+  }
+  .morph-char {
+    animation-name: fade-in;
+    animation-delay: 0ms;
+  }
+  .morph-out {
+    animation: none;
+    opacity: 0;
+  }
+  .nav-name {
+    transform: none !important;
   }
 }
 

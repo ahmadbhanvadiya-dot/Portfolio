@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { skills, type Skill } from "@/data/site";
 import Section from "./Section";
+import TextMorph from "./TextMorph";
 
 const list = (names: string[]) =>
   names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
@@ -65,14 +66,18 @@ export default function Skills() {
         aria-live="polite"
         className="sticky bottom-0 z-10 mt-12 border-t border-hairline bg-paper py-4 text-[15px] leading-relaxed text-graphite sm:static sm:bg-transparent sm:pb-0"
       >
-        {current ? (
-          <>
-            <span className="text-ink">{current.name}</span> is used in{" "}
-            <span className="text-ink">{list(current.usedIn)}</span>.
-          </>
-        ) : (
-          "Choose a skill to see which projects use it."
-        )}
+        <TextMorph
+          parts={
+            current
+              ? [
+                  { text: current.name, className: "text-ink" },
+                  { text: " is used in " },
+                  { text: list(current.usedIn), className: "text-ink" },
+                  { text: "." },
+                ]
+              : "Choose a skill to see which projects use it."
+          }
+        />
       </p>
     </Section>
   );

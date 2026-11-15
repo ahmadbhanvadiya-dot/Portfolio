@@ -188,6 +188,11 @@ export async function capturePage(
 
       // The live toggle is drawn above the overlay, so leave a hole for it. `visibility`
       // (not data-html2canvas-ignore) keeps its box in the layout so the nav doesn't shift.
+      // Panning screenshots are captured resting at the top of their page.
+      doc.querySelectorAll<HTMLElement>("[data-pan]").forEach((el) => {
+        el.style.transform = "none";
+      });
+
       doc.querySelectorAll<HTMLElement>("[data-ink-live]").forEach((el) => {
         el.style.visibility = "hidden";
       });

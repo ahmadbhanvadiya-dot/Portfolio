@@ -7,6 +7,8 @@ import ThemeToggle from "./ThemeToggle";
 export default function Navbar() {
   const [active, setActive] = useState<string>("home");
   const [scrolled, setScrolled] = useState(false);
+  // Continuity: the name moves into the bar once the hero's name has passed under it.
+  const [nameIn, setNameIn] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const firstLink = useRef<HTMLAnchorElement>(null);
@@ -35,7 +37,28 @@ export default function Navbar() {
       return;
     }
     window.dispatchEvent(new Event("ink:dirty"));
-  }, [active, scrolled]);
+  }, [active]);
+  // The bar's own look (hairline, name) is seen on every toggle: refresh it promptly.
+  const firstBarState = useRef(true);
+  useEffect(() => {
+    if (firstBarState.current) {
+      firstBarState.current = false;
+      return;
+    }
+    window.dispatchEvent(new CustomEvent("ink:dirty", { detail: { urgent: true } }));
+  }, [scrolled, nameIn]);
+
+  useEffect(() => {
+    const heroName = document.querySelector("[data-hero-name]");
+    if (!heroName) return;
+    // In view below the 56px bar = the hero shows the name; above it = the bar does.
+    const io = new IntersectionObserver(
+      ([e]) => setNameIn(!e.isIntersecting && e.boundingClientRect.top < 56),
+      { rootMargin: "-56px 0px 0px 0px" },
+    );
+    io.observe(heroName);
+    return () => io.disconnect();
+  }, []);
 
   // The ink snapshots don't include the open menu; the transition cross-fades instead.
   useEffect(() => {
@@ -113,7 +136,10 @@ export default function Navbar() {
           >
             AB
           </span>
-          <span className="hidden text-[15px] font-medium tracking-[-0.01em] sm:block">
+          <span
+            data-in={nameIn ? "" : undefined}
+            className="nav-name text-[15px] font-medium tracking-[-0.01em]"
+          >
             {site.name}
           </span>
         </a>
