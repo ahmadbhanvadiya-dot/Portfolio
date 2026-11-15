@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T00:00:00Z",
+  "title": "Design System: Ahmad Bhanvadiya",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Ultramarine Signal", "canonical": "#2e43c4", "tonalRamp": ["#121a4f", "#1c2a7d", "#2639a8", "#2e43c4", "#5668d6", "#8292e4", "#b2bcf0", "#e0e4fa"] },
+      "accent-dark": { "role": "primary", "displayName": "Ultramarine Signal (dark)", "canonical": "#95a3ff", "tonalRamp": ["#1d2459", "#2b3366", "#3c4a9e", "#5a6bd6", "#7886f0", "#95a3ff", "#bfc7ff", "#e6e9ff"] },
+      "selection": { "role": "primary", "displayName": "Selection Tint", "canonical": "#d9ddf7" },
+      "selection-dark": { "role": "primary", "displayName": "Selection Tint (dark)", "canonical": "#2b3366" },
+      "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#f5f3ee", "tonalRamp": ["#1b1a18", "#3a3834", "#67645d", "#9b978e", "#cdc8bd", "#e0dcd3", "#ece9e2", "#f5f3ee"] },
+      "surface": { "role": "neutral", "displayName": "Bone Surface", "canonical": "#ece9e2" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#161513", "tonalRamp": ["#0b0b0a", "#161513", "#2a2926", "#3a3834", "#67645d", "#9b978e", "#cdc8bd", "#edebe5"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "#67645d" },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "#e0dcd3" },
+      "hairline-strong": { "role": "neutral", "displayName": "Hairline Strong", "canonical": "#cdc8bd" },
+      "accent-ink": { "role": "neutral", "displayName": "Accent Ink", "canonical": "#ffffff" },
+      "paper-dark": { "role": "neutral", "displayName": "Warm Charcoal", "canonical": "#121210" },
+      "surface-dark": { "role": "neutral", "displayName": "Charcoal Surface", "canonical": "#1b1a18" },
+      "ink-dark": { "role": "neutral", "displayName": "Bone Ink", "canonical": "#edebe5" },
+      "graphite-dark": { "role": "neutral", "displayName": "Graphite (dark)", "canonical": "#9b978e" },
+      "hairline-dark": { "role": "neutral", "displayName": "Hairline (dark)", "canonical": "#2a2926" },
+      "hairline-strong-dark": { "role": "neutral", "displayName": "Hairline Strong (dark)", "canonical": "#3a3834" },
+      "accent-ink-dark": { "role": "neutral", "displayName": "Accent Ink (dark)", "canonical": "#121210" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero sentence (two-tone ink/graphite, max 15ch) and Contact headline." },
+      "headline": { "displayName": "Headline", "purpose": "Work row project names, nowrap." },
+      "lead": { "displayName": "Lead", "purpose": "Opening About paragraph." },
+      "body-large": { "displayName": "Body Large", "purpose": "Hero and Contact descriptions in graphite, 46-52ch; 1.0625rem below sm." },
+      "body": { "displayName": "Body", "purpose": "Row descriptions (54ch) and About paragraphs, 15-17px." },
+      "title": { "displayName": "Title", "purpose": "Section titles, nav name, button labels." },
+      "label": { "displayName": "Label (mono)", "purpose": "Checkable facts only: stacks, categories, handles, link metadata, counters; 12-13px." }
+    },
+    "shadows": [
+      { "name": "plate-lift", "value": "0 1px 2px rgb(22 21 19 / 0.04), 0 12px 32px -12px rgb(22 21 19 / 0.18)", "purpose": "Sticky Work preview frame only (light)." },
+      { "name": "plate-lift-dark", "value": "0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6)", "purpose": "Sticky Work preview frame only (dark)." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "The single easing for entrances, reveals, wipes, underlines and nudges." },
+      { "name": "enter", "value": "rise 1s ease-out-expo both; delay calc(var(--i) * 90ms + 80ms); from translateY(0.35em) blur(6px) opacity 0", "purpose": "Hero and mobile-menu entrance." },
+      { "name": "reveal", "value": "opacity/transform 0.8s ease-out-expo; translateY(14px); stagger 70ms; only under .js", "purpose": "Work row reveal on scroll." },
+      { "name": "preview-wipe", "value": "clip-path inset(100% 0 0 0) -> inset(0) 700ms ease-out-expo", "purpose": "Incoming preview wipes up over the held outgoing one." },
+      { "name": "link-draw", "value": "background-size 0% -> 100% 1px, 0.45s ease-out-expo", "purpose": ".link underline draws in from the left." },
+      { "name": "link-redraw", "value": "background-size 100% -> 0% 1px, 0.5s ease-out-expo", "purpose": ".link-strong underline retracts right, redraws from left." },
+      { "name": "reduced-motion", "value": "durations 0.01ms, delays 0, scroll-behavior auto, reveals forced visible", "purpose": "prefers-reduced-motion: reduce fallback." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled main action; floods accent on hover.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">View selected work <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 3v10M4 9l4 4 4-4\"/></svg></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 20px; border-radius: 4px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Schibsted Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), background-color 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary svg { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--accent, #2e43c4); color: var(--accent-ink, #fff); } .ds-btn-primary:hover svg { transform: translateY(2px); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, #2e43c4); outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Mono secondary action (Copy email) with a strong hairline.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">Copy email</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 1px solid var(--hairline-strong, #cdc8bd); border-radius: 4px; background: transparent; color: var(--graphite, #67645d); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; } .ds-btn-outline:hover { border-color: var(--ink, #161513); color: var(--ink, #161513); } .ds-btn-outline:focus-visible { outline: 2px solid var(--accent, #2e43c4); outline-offset: 3px; }"
+    },
+    {
+      "name": "Draw-in Link",
+      "kind": "custom",
+      "description": "Underline grows from the left on hover; present link retracts and redraws.",
+      "html": "<span class=\"ds-links\"><a class=\"ds-link\" href=\"#\">GitHub</a> <a class=\"ds-link-strong\" href=\"#\">Get in touch</a></span>",
+      "css": ".ds-links { display: inline-flex; gap: 24px; align-items: baseline; } .ds-link, .ds-link-strong { color: var(--ink, #161513); text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; } .ds-link { font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 13px; background-size: 0% 1px; background-position: 0 100%; transition: background-size 0.45s cubic-bezier(0.16,1,0.3,1); } .ds-link:hover, .ds-link:focus-visible { background-size: 100% 1px; } .ds-link-strong { font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; font-size: 15px; font-weight: 500; background-size: 100% 1px; background-position: 100% 100%; transition: background-size 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-link-strong:hover { background-size: 0% 1px; background-position: 0 100%; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Monogram + name left; graphite links with an accent dot on the active one.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\"><span class=\"ds-mono\">AB</span>Ahmad Bhanvadiya</a><ul><li><a href=\"#\" aria-current=\"true\">Work</a></li><li><a href=\"#\">About</a></li><li><a href=\"#\">Contact</a></li></ul></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; background: var(--paper, #f5f3ee); border-bottom: 1px solid var(--hairline, #e0dcd3); font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; } .ds-nav-brand { display: flex; align-items: center; gap: 12px; color: var(--ink, #161513); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; text-decoration: none; } .ds-mono { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 3px; background: var(--ink, #161513); color: var(--paper, #f5f3ee); font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 11px; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-nav-brand:hover .ds-mono { transform: rotate(-6deg); } .ds-nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; } .ds-nav ul a { position: relative; font-size: 14px; color: var(--graphite, #67645d); text-decoration: none; transition: color 0.2s; } .ds-nav ul a:hover, .ds-nav ul a[aria-current] { color: var(--ink, #161513); } .ds-nav ul a[aria-current]::before { content: \"\"; position: absolute; left: -12px; top: 50%; width: 4px; height: 4px; border-radius: 50%; background: var(--accent, #2e43c4); transform: translateY(-50%); }"
+    },
+    {
+      "name": "Section Frame",
+      "kind": "custom",
+      "description": "Hairline top rule, sticky 3-column title with graphite aside, 9-column content.",
+      "html": "<section class=\"ds-section\"><div><h2>Skills</h2><p>What I work with, grouped by where it sits in a project.</p></div><div class=\"ds-section-body\">Content</div></section>",
+      "css": ".ds-section { display: grid; grid-template-columns: 3fr 9fr; column-gap: 40px; border-top: 1px solid var(--hairline, #e0dcd3); padding: 24px 0 48px; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; color: var(--ink, #161513); } .ds-section h2 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; } .ds-section p { margin: 8px 0 0; font-size: 14px; line-height: 1.625; color: var(--graphite, #67645d); }"
+    },
+    {
+      "name": "Work Row",
+      "kind": "custom",
+      "description": "Hairline-topped project entry: headline name, mono category, graphite description, mono stack, draw-in links.",
+      "html": "<div class=\"ds-row\"><h3>Vitl</h3><span class=\"ds-row-meta\">Health / Web</span><p>A digital health profile anyone can open by QR in an emergency.</p><div class=\"ds-row-foot\"><span class=\"ds-row-meta\">Next.js / TypeScript / Supabase</span><a href=\"#\">Code</a></div></div>",
+      "css": ".ds-row { border-top: 1px solid var(--hairline, #e0dcd3); padding: 32px 0; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; color: var(--ink, #161513); } .ds-row h3 { margin: 0 0 6px; font-size: 36px; font-weight: 500; line-height: 1.05; letter-spacing: -0.035em; transition: color 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-row:hover h3 { transform: translateX(6px); } .ds-row-meta { font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 12px; color: var(--graphite, #67645d); } .ds-row p { margin: 12px 0 0; max-width: 54ch; font-size: 16px; line-height: 1.625; color: var(--graphite, #67645d); } .ds-row-foot { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; } .ds-row-foot a { font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 13px; color: var(--ink, #161513); text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 0.45s cubic-bezier(0.16,1,0.3,1); } .ds-row-foot a:hover { background-size: 100% 1px; }"
+    },
+    {
+      "name": "Preview Plate",
+      "kind": "card",
+      "refersTo": "preview-plate",
+      "description": "16:10 surface frame with hairline border, 4px radius and the only shadow; typeset fallback when no screenshot exists.",
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-plate-frame\"><span class=\"ds-plate-meta\">Mobile app · Flutter, Dart</span><p>Freshlify</p></div><figcaption><span>Freshlify</span><span>01 / 05</span></figcaption></figure>",
+      "css": ".ds-plate { margin: 0; width: 360px; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; } .ds-plate-frame { aspect-ratio: 16 / 10; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; background: var(--surface, #ece9e2); border: 1px solid var(--hairline, #e0dcd3); border-radius: 4px; box-shadow: var(--shadow, 0 1px 2px rgb(22 21 19 / 0.04), 0 12px 32px -12px rgb(22 21 19 / 0.18)); overflow: hidden; } .ds-plate-meta, .ds-plate figcaption { font-family: \"Geist Mono\", ui-monospace, monospace; font-size: 12px; color: var(--graphite, #67645d); } .ds-plate-frame p { margin: 0; font-size: 40px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; color: var(--ink, #161513); } .ds-plate figcaption { margin-top: 16px; display: flex; justify-content: space-between; }"
+    },
+    {
+      "name": "Availability Line",
+      "kind": "chip",
+      "description": "Accent state dot beside an ink status line; the accent's canonical use.",
+      "html": "<p class=\"ds-status\"><span aria-hidden=\"true\"></span>Open to internships &amp; collaborations</p>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-family: \"Schibsted Grotesk\", ui-sans-serif, sans-serif; font-size: 13px; color: var(--ink, #161513); } .ds-status span { width: 8px; height: 8px; border-radius: 50%; background: var(--accent, #2e43c4); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Specimen Sheet",
+    "overview": "The site reads like a well-set type specimen. It has one grotesk at a few chosen sizes, a quiet mono for facts, and 1px hairlines for structure. Warm off-white paper and near-black ink carry nearly everything. A two-tone display sentence opens the page: the name is set in ink, the intent in graphite. After that the page becomes an index of real work, and the work leads while the chrome recedes.\n\nDensity is low and the rhythm is editorial. Sections share one frame: a hairline rule, a small title in a sticky left column, and content on the right. Depth comes almost entirely from tone and rules, not from lift. The only exception is the preview frame, which floats a little so the screenshots read as objects. Motion is short, eased hard on an expo-out curve, and always functional: entrances, reveals, a wipe between previews, and underlines that draw in.\n\nThe system rejects gradients, neon glow, glassmorphism, large rounded cards, skill-badge walls, floating decoration and invented statistics (owner's binding brief, PRODUCT.md).",
+    "keyCharacteristics": [
+      "Warm paper and ink, with graphite doing every secondary job.",
+      "One ultramarine accent, reserved for state.",
+      "A single grotesk at deliberate sizes with tight negative tracking at display scale; mono at 12-13px for metadata.",
+      "1px hairline rules instead of boxes; a 4px radius on the few framed objects.",
+      "A shared 12-column section frame inside a 1200px container.",
+      "Expo-out motion, with fully static fallbacks under reduced motion."
+    ],
+    "rules": [
+      { "name": "The State-Only Accent Rule", "body": "Ultramarine marks state (available, active, focused, selected, hovered, confirmed) and nothing else. It never fills a section, colours a heading at rest, or decorates.", "section": "colors" },
+      { "name": "The Graphite Second Voice Rule", "body": "Hierarchy comes from ink versus graphite, not from more colours. If something needs to recede, it turns graphite.", "section": "colors" },
+      { "name": "The Mono-Is-Fact Rule", "body": "Mono is set only on checkable facts: stacks, categories, handles, link names and counters. It is never used for prose or headings.", "section": "typography" },
+      { "name": "The Balanced Wrap Rule", "body": "h1 through h3 use text-wrap: balance and paragraphs use text-wrap: pretty. Line measure is capped in ch on every reading block.", "section": "typography" },
+      { "name": "The One Lifted Object Rule", "body": "Only the preview frame casts a shadow. Everything else separates by a hairline or a tone step.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use ultramarine only for state: availability, active, focus, selection, hover and confirmation.",
+      "Do separate content with 1px hairlines and paper/surface tone steps rather than boxes.",
+      "Do put new sections inside the shared Section frame (3 + 9 columns at lg, hairline top, sticky title).",
+      "Do set technical facts in Geist Mono at 12-13px in graphite, and use slashes or commas between stack items.",
+      "Do keep framed objects at a 4px radius and limit the shadow to the preview frame.",
+      "Do use the expo-out curve (cubic-bezier(0.16, 1, 0.3, 1)) for motion, and give every effect a static reduced-motion fallback.",
+      "Do show real screenshots in preview plates, or a typeset plate when none exists."
+    ],
+    "donts": [
+      "Don't use gradients, neon glow, glassmorphism, large rounded cards or floating decoration.",
+      "Don't add a second accent or tint a heading with ultramarine at rest.",
+      "Don't build skill-badge walls or chip grids; skills are plain lists under mono labels.",
+      "Don't add shadows to rows, buttons or sections.",
+      "Don't fabricate screenshots, metrics or statistics in any component."
+    ]
+  }
+}
