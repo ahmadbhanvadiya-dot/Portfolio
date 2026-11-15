@@ -140,6 +140,7 @@ function InlineShot({ project, open }: { project: Project; open: () => void }) {
   return (
     <div
       ref={frameRef}
+      data-cursor="Drag"
       className="shot drag-frame relative z-10 mb-6 aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface sm:mb-0 lg:hidden"
     >
       <div data-pan className="will-change-transform">
@@ -278,6 +279,7 @@ export default function Projects() {
             <li
               key={p.slug}
               data-active={active === i ? "" : undefined}
+              data-scroll
               className="work-row relative border-t border-hairline py-7 sm:py-8"
               onPointerDown={(e) => {
                 lastPointer.current = e.pointerType;
@@ -299,24 +301,27 @@ export default function Projects() {
                         rowLinks.current[i] = el;
                       }}
                       onClick={(e) => onRowNameClick(e, i)}
+                      data-cursor="Open"
                       className="work-name text-[clamp(1.625rem,3vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.035em] after:absolute after:inset-0 after:content-['']"
                     >
-                      {p.name}
+                      <span className="mask mask--inline">
+                        <span className="mask-inner">{p.name}</span>
+                      </span>
                       <ArrowUpRight size={18} className="work-arrow ml-1.5 inline-block align-[0.15em] text-graphite" />
                       <span className="sr-only">
                         , {p.live ? "open the live demo" : "open the code on GitHub"} (new tab)
                       </span>
                     </a>
-                    <span className="font-mono text-[12px] font-normal tracking-normal text-graphite">
+                    <span className="row-rest font-mono text-[12px] font-normal tracking-normal text-graphite">
                       {p.category}
                     </span>
                   </h3>
 
-                  <p className="mt-3 max-w-[54ch] text-[15px] leading-relaxed text-graphite sm:text-base">
+                  <p className="row-rest mt-3 max-w-[54ch] text-[15px] leading-relaxed text-graphite sm:text-base">
                     {p.description}
                   </p>
 
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10 lg:justify-between">
+                  <div className="row-rest mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10 lg:justify-between">
                     <p className="font-mono text-[12px] leading-relaxed text-graphite">
                       <span className="sr-only">Built with </span>
                       {p.stack.join(" / ")}
@@ -338,6 +343,7 @@ export default function Projects() {
               target="_blank"
               rel="noopener noreferrer"
               tabIndex={-1}
+              data-cursor={activeProject.preview ? "Drag" : "Open"}
               data-instant={instant ? "" : undefined}
               className="shot drag-frame relative block aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-surface shadow-[var(--shadow)]"
             >

@@ -78,6 +78,12 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Full-bleed layers (hero ink) may span 100vw; never let that become a sideways scroll. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);
@@ -364,6 +370,112 @@ button.skill {
   }
 }
 
+/* ---------- Skills <-> projects map (Skills.tsx) ---------- */
+
+.skill-link {
+  fill: none;
+  stroke: var(--hairline-strong);
+  stroke-width: 1;
+  opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+/* Active links draw themselves from the skill to the project (pathLength = 1). */
+.skill-link--active {
+  stroke: var(--accent);
+  stroke-width: 1.25;
+  opacity: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 160ms var(--ease-out);
+}
+.skill-link--active[data-on] {
+  stroke-dashoffset: 0;
+  transition-duration: 460ms;
+}
+.project-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  touch-action: manipulation;
+}
+.project-node__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: scale(0.5);
+  opacity: 0;
+  transition:
+    transform 200ms var(--ease-out),
+    opacity 150ms ease;
+}
+.project-node[data-current] .project-node__dot {
+  transform: none;
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .project-node {
+    cursor: grab;
+  }
+  .project-node.is-dragging {
+    cursor: grabbing;
+    z-index: 2;
+  }
+}
+
+/* ---------- Context cursor and magnetic controls (SmartCursor.tsx) ---------- */
+
+.smart-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1003;
+  pointer-events: none;
+}
+.smart-cursor__label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  /* Readable over light screenshots on the dark theme too. */
+  box-shadow:
+    0 0 0 1px var(--hairline-strong),
+    0 2px 8px -2px rgb(0 0 0 / 0.35);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transform-origin: 0 0;
+  transform: scale(0.6);
+  opacity: 0;
+  transition:
+    transform 120ms var(--ease-out),
+    opacity 120ms ease;
+}
+.smart-cursor[data-on] .smart-cursor__label {
+  transform: none;
+  opacity: 1;
+  transition-duration: 160ms;
+}
+@media (hover: none), (pointer: coarse) {
+  .smart-cursor {
+    display: none;
+  }
+}
+[data-magnetic] {
+  transition:
+    translate 450ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    background-size 120ms var(--ease-out);
+}
+[data-magnetic][data-pulling] {
+  transition-duration: 140ms, 160ms, 150ms, 150ms, 150ms, 200ms;
+}
+
 /* ---------- Text morph (TextMorph.tsx) ---------- */
 
 .morph {
@@ -481,18 +593,49 @@ html[data-menu="open"] .hero-name {
   transform-origin: 0 50%;
   transition: transform 900ms var(--ease-out);
 }
-.scroll-rise {
-  transition:
-    opacity 500ms ease,
-    transform 700ms var(--ease-out);
-  transition-delay: 90ms;
-}
 .js [data-scroll]:not(.in-view).scroll-rule::before {
   transform: scaleX(0);
 }
-.js [data-scroll]:not(.in-view) .scroll-rise {
+
+/* Masked reveal: titles and project names slide up out of their own line box, once.
+   The padding keeps descenders inside the mask. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.mask--inline {
+  display: inline-block;
+  vertical-align: bottom;
+}
+.mask-inner {
+  display: block;
+  transition: transform 820ms var(--ease-out);
+  transition-delay: calc(var(--sd, 0ms) + 60ms);
+}
+.js [data-scroll]:not(.in-view) .mask-inner {
+  transform: translateY(110%);
+}
+/* A project's details follow its name. */
+.row-rest {
+  transition:
+    opacity 600ms ease,
+    transform 700ms var(--ease-out);
+  transition-delay: calc(var(--sd, 0ms) + 180ms);
+}
+.js [data-scroll]:not(.in-view) .row-rest {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(12px);
+}
+
+/* Words light up as the paragraph is read (ScrollWords.tsx). Graphite still reads at AA. */
+.scroll-words [data-w] {
+  color: var(--graphite);
+  transition: color 360ms ease;
+}
+.scroll-words [data-w][data-lit] {
+  color: var(--ink);
 }
 
 /* ---------- Hero entrance: the only load motion, about 1.1s ---------- */
@@ -559,12 +702,16 @@ html[data-menu="open"] .hero-name {
   .preview-layer .preview-media,
   .menu-panel,
   .menu-panel .menu-item,
-  .js [data-scroll]:not(.in-view) .scroll-rise,
+  .js [data-scroll]:not(.in-view) .mask-inner,
+  .js [data-scroll]:not(.in-view) .row-rest,
   [data-work-list][data-hovering] li[data-active] .work-name {
     transform: none !important;
   }
   .js [data-scroll]:not(.in-view).scroll-rule::before {
     transform: none;
+  }
+  .js [data-scroll]:not(.in-view) .row-rest {
+    opacity: 1;
   }
   .preview-layer.is-in {
     transition: none;
@@ -576,6 +723,13 @@ html[data-menu="open"] .hero-name {
   .morph-out {
     animation: none;
     opacity: 0;
+  }
+  .skill-link--active {
+    transition: none;
+  }
+  .smart-cursor__label {
+    transform: none;
+    transition: opacity 120ms ease;
   }
   .nav-name {
     transition: opacity 200ms ease;

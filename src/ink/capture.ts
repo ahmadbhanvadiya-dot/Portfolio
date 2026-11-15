@@ -136,6 +136,10 @@ export async function capturePage(
       const root = doc.documentElement;
       root.setAttribute("data-theme", theme);
       root.classList.remove("theme-fade");
+      // The live page clips sideways overflow (overflow-x: clip); html2canvas would read that
+      // as clipping both axes and cut off the layer strip below the document.
+      root.style.overflow = "visible";
+      doc.body.style.overflow = "visible";
 
       // Settled state only: no mid-animation frames baked into the snapshot.
       const style = doc.createElement("style");
@@ -143,6 +147,12 @@ export async function capturePage(
         "*,*::before,*::after{animation:none!important;transition:none!important}";
       doc.head.appendChild(style);
       doc.querySelectorAll("[data-scroll]").forEach((el) => el.classList.add("in-view"));
+      doc.querySelectorAll("[data-w]").forEach((el) => el.setAttribute("data-lit", ""));
+      // html2canvas draws underlines in currentColor even when text-decoration-color is
+      // transparent (how the skills hide theirs at rest).
+      doc.querySelectorAll<HTMLElement>(".skill:not([data-current])").forEach((el) => {
+        el.style.textDecorationLine = "none";
+      });
       doc.querySelectorAll("[data-hovering]").forEach((el) => el.removeAttribute("data-hovering"));
 
       // svh/dvh resolve against the clone iframe, not the phone's real viewport.
@@ -204,6 +214,9 @@ export async function capturePage(
       // Panning screenshots are captured resting at the top of their page.
       doc.querySelectorAll<HTMLElement>("[data-pan]").forEach((el) => {
         el.style.transform = "none";
+      });
+      doc.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
+        el.style.translate = "none";
       });
 
       doc.querySelectorAll<HTMLElement>("[data-ink-live]").forEach((el) => {

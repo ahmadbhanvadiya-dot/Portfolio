@@ -13,8 +13,11 @@ export default function ScrollMotion() {
     const targets = document.querySelectorAll<HTMLElement>("[data-scroll]");
     const io = new IntersectionObserver(
       (entries) => {
+        // Items arriving together are staggered (60ms apart) so they read as one cascade.
+        let n = 0;
         for (const e of entries) {
           if (!e.isIntersecting) continue;
+          (e.target as HTMLElement).style.setProperty("--sd", `${n++ * 60}ms`);
           e.target.classList.add("in-view");
           io.unobserve(e.target);
         }

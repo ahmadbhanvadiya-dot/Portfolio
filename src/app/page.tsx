@@ -7,6 +7,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollMotion from "@/components/ScrollMotion";
 import HeroTravel from "@/components/HeroTravel";
+import SmartCursor from "@/components/SmartCursor";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <Footer />
       <ScrollMotion />
       <HeroTravel />
+      <SmartCursor />
     </>
   );
 }

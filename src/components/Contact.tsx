@@ -18,9 +18,9 @@ export default function Contact() {
       <div data-scroll className="scroll-rule pb-24 pt-16 sm:pb-32 sm:pt-20">
         <h2
           id="contact-title"
-          className="scroll-rise max-w-[14ch] text-[clamp(2.125rem,6.6vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em]"
+          className="mask max-w-[14ch] text-[clamp(2.125rem,6.6vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em]"
         >
-          Have something interesting in mind?
+          <span className="mask-inner">Have something interesting in mind?</span>
         </h2>
         <p className="mt-8 max-w-[46ch] text-[1.0625rem] leading-relaxed text-graphite sm:text-[1.25rem] sm:leading-[1.55]">
           I&apos;m always interested in building useful things, exploring new ideas, and

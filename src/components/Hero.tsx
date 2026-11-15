@@ -1,4 +1,5 @@
 import { projects, site } from "@/data/site";
+import HeroInk from "./HeroInk";
 import { ArrowDown, ArrowUpRight } from "./Icons";
 
 const live = (slug: string) => projects.find((p) => p.slug === slug)?.live ?? site.github;
@@ -21,8 +22,9 @@ export default function Hero() {
     <section
       id="home"
       data-ink-fixh
-      className="mx-auto mb-14 flex min-h-[min(100svh,56rem)] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
+      className="relative mx-auto mb-14 flex min-h-[min(100svh,56rem)] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
     >
+      <HeroInk />
       <div className="flex flex-1 flex-col justify-center py-16 sm:py-24">
         <h1 className="max-w-[15ch] text-[clamp(2.5rem,7.4vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.04em]">
           <span className="enter block" style={{ ["--i" as string]: 0 }}>
@@ -53,12 +55,13 @@ export default function Hero() {
         >
           <a
             href="#work"
+            data-magnetic
             className="press cta group inline-flex h-11 items-center gap-2.5 rounded-[4px] bg-ink pl-5 pr-4 text-[15px] font-medium text-paper"
           >
             View selected work
             <ArrowDown className="transition-transform duration-150 ease-out group-hover:translate-y-0.5" />
           </a>
-          <a href="#contact" className="link-strong -my-3 py-3 text-[15px] font-medium">
+          <a href="#contact" data-magnetic className="link-strong -my-3 py-3 text-[15px] font-medium">
             Get in touch
           </a>
         </div>

@@ -33,6 +33,7 @@ export default function CopyEmail({ email }: { email: string }) {
     <button
       type="button"
       onClick={copy}
+      data-magnetic
       className="press inline-grid h-11 items-center rounded-[4px] border border-hairline-strong px-4 font-mono text-[12px] text-graphite hover:border-ink hover:text-ink"
     >
       <span className={`${layer} ${copied ? hiddenState : shown}`} aria-hidden={copied}>
