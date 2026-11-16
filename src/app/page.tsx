@@ -6,8 +6,8 @@ import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollMotion from "@/components/ScrollMotion";
-import HeroTravel from "@/components/HeroTravel";
 import SmartCursor from "@/components/SmartCursor";
+import Rulers from "@/components/Rulers";
 
 export default function Home() {
   return (
@@ -22,8 +22,9 @@ export default function Home() {
       </main>
       <Footer />
       <ScrollMotion />
-      <HeroTravel />
       <SmartCursor />
+      <Rulers />
+      <div className="grain" aria-hidden="true" data-html2canvas-ignore="" />
     </>
   );
 }

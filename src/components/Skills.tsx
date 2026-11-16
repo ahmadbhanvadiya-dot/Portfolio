@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { projects, skills } from "@/data/site";
-import Section from "./Section";
+import PlateHeader from "./PlateHeader";
 import TextMorph from "./TextMorph";
 
 const list = (names: string[]) =>
@@ -209,10 +209,18 @@ export default function Skills() {
     : "Choose a skill or a project to see how they connect.";
 
   return (
-    <Section id="skills" title="Skills" aside="What I work with, and where. Point at a skill or a project; drag a project to play.">
+    <section id="skills" aria-labelledby="skills-title" className="relative mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+      <div data-scroll className="scroll-rule pb-28 sm:pb-40">
+      <PlateHeader
+        id="skills"
+        n="03"
+        slug="Skills"
+        title="Tools, wired"
+        aside="What I work with, and where. Point at a skill or a project; drag a project to play."
+      />
       <div
         ref={mapRef}
-        className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_11rem] lg:gap-x-24"
+        className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-28"
         data-skills
         data-has-current={current ? "" : undefined}
         onPointerLeave={(e) => e.pointerType === "mouse" && !drag.current && setHovered(null)}
@@ -236,12 +244,12 @@ export default function Skills() {
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
           {skills.map((s) => (
             <div key={s.group}>
-              <h3 className="border-b border-hairline pb-3 font-mono text-[12px] text-graphite">{s.group}</h3>
+              <h3 className="flex justify-between border-b border-hairline pb-3 font-mono text-[11px] uppercase tracking-[0.08em] text-graphite"><span>{s.group}</span><span aria-hidden="true">{String(s.items.length).padStart(2, "0")}</span></h3>
               <ul className="mt-2.5">
                 {s.items.map((item) => {
                   if (item.usedIn.length === 0) {
                     return (
-                      <li key={item.name} className="skill skill--plain py-2.5 text-[16px] tracking-[-0.01em] lg:py-1.5">
+                      <li key={item.name} className="skill skill--plain py-2.5 text-[17px] tracking-[-0.01em] lg:py-1 lg:text-[19px]">
                         {item.name}
                       </li>
                     );
@@ -260,7 +268,7 @@ export default function Skills() {
                         onFocus={() => setHovered(f)}
                         onBlur={() => setHovered(null)}
                         onClick={() => toggle(f)}
-                        className="skill relative -mx-1 min-h-11 rounded-[3px] bg-paper px-1 py-2.5 text-left text-[16px] tracking-[-0.01em] lg:min-h-0 lg:py-1.5"
+                        className="skill relative -mx-1 min-h-11 rounded-[3px] bg-paper px-1 py-2.5 text-left text-[17px] tracking-[-0.01em] lg:min-h-0 lg:py-1 lg:text-[19px]"
                       >
                         {item.name}
                       </button>
@@ -273,7 +281,7 @@ export default function Skills() {
         </div>
 
         <div className="mt-12 lg:mt-0">
-          <h3 className="border-b border-hairline pb-3 font-mono text-[12px] text-graphite">Projects</h3>
+          <h3 className="border-b border-hairline pb-3 font-mono text-[11px] uppercase tracking-[0.08em] text-graphite">Projects</h3>
           <ul className="mt-2.5 flex flex-wrap gap-x-5 lg:block">
             {projectNames.map((name) => {
               const f = { kind: "project" as const, name };
@@ -295,7 +303,7 @@ export default function Skills() {
                     onBlur={() => setHovered(null)}
                     onClick={() => toggle(f)}
                     data-cursor="Drag"
-                    className="skill project-node relative -mx-1 min-h-11 rounded-[3px] bg-paper px-1 py-2.5 text-left text-[16px] tracking-[-0.01em] lg:min-h-0 lg:py-2"
+                    className="skill project-node relative -mx-1 min-h-11 rounded-[3px] bg-paper px-1 py-2.5 text-left font-display text-[20px] font-bold uppercase tracking-[0.01em] lg:min-h-0 lg:py-2 lg:text-[24px]"
                   >
                     <span className="project-node__dot" aria-hidden="true" />
                     {name}
@@ -314,6 +322,7 @@ export default function Skills() {
       >
         <TextMorph parts={answer} />
       </p>
-    </Section>
+      </div>
+    </section>
   );
 }

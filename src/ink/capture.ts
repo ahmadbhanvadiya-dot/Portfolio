@@ -215,6 +215,20 @@ export async function capturePage(
       doc.querySelectorAll<HTMLElement>("[data-pan]").forEach((el) => {
         el.style.transform = "none";
       });
+      // No blend modes in html2canvas: approximate the overprinted blue plate.
+      doc.querySelectorAll<HTMLElement>(".hn-plate--blue, .contact-title__blue").forEach((el) => {
+        el.style.opacity = "0.55";
+      });
+      // Scroll-driven numerals: freeze each at the offset it has on the live page.
+      const liveNumerals = document.querySelectorAll<HTMLElement>(".exhibit-numeral");
+      doc.querySelectorAll<HTMLElement>(".exhibit-numeral").forEach((el, i) => {
+        el.style.animation = "none";
+        el.style.transform = liveNumerals[i] ? getComputedStyle(liveNumerals[i]).transform : "none";
+      });
+      // paint-order is not reliable in html2canvas; drop the paper outline on project names.
+      doc.querySelectorAll<HTMLElement>(".exhibit-name").forEach((el) => {
+        el.style.setProperty("-webkit-text-stroke", "0");
+      });
       doc.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
         el.style.translate = "none";
       });

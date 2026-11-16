@@ -1,54 +1,72 @@
 @import "tailwindcss";
 
-/* ---------- Tokens ---------- */
+/* ---------- Tokens: OVERPRINT ----------
+   A two-ink print room. Paper (warm off-white) or charcoal, text ink, and two process
+   inks used deliberately: electric ultramarine (print, links, focus) and acid lime
+   (highlighter, selection, the second ink of overprints). Lime is never text on paper. */
 
 :root {
-  --paper: #f5f3ee;
-  --surface: #ece9e2;
-  --ink: #161513;
-  --graphite: #67645d;
-  --hairline: #e0dcd3;
-  --hairline-strong: #cdc8bd;
-  --accent: #2c3ec9;
+  --paper: #f0ece2;
+  --surface: #e6e1d4;
+  --ink: #121210;
+  --graphite: #5d5950;
+  --hairline: #d6d0c1;
+  --hairline-strong: #bdb6a5;
+  --blue: #2433f0; /* process ink: ultramarine */
+  --lime: #d4ff2e; /* process ink: acid lime */
+  --lime-ink: #121210;
+  --accent: #2433f0; /* text-safe blue (6.8:1 on paper) */
   --accent-ink: #ffffff;
-  --selection: #d8ddf8;
-  --cta-hover: #34322d;
+  --selection: #d4ff2e;
+  --cta-hover: #2433f0;
   --shot-dim: transparent;
-  --shadow: 0 1px 2px rgb(22 21 19 / 0.04), 0 12px 32px -12px rgb(22 21 19 / 0.18);
+  --overprint: multiply;
+  --grain: 0.09;
+  --shadow: 0 1px 2px rgb(18 18 16 / 0.06), 0 24px 48px -24px rgb(18 18 16 / 0.35);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #121210;
-    --surface: #1b1a18;
-    --ink: #edebe5;
-    --graphite: #9b978e;
-    --hairline: #2a2926;
-    --hairline-strong: #3a3834;
-    --accent: #7f93ff;
-    --accent-ink: #121210;
-    --selection: #262f6b;
-  --cta-hover: #ffffff;
-  --shot-dim: rgb(0 0 0 / 0.12);
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+    --paper: #0f0f0d;
+    --surface: #181816;
+    --ink: #f0ece2;
+    --graphite: #a39f95;
+    --hairline: #262522;
+    --hairline-strong: #3d3b36;
+    --blue: #3442ff;
+    --lime: #d4ff2e;
+    --lime-ink: #0f0f0d;
+    --accent: #8c96ff;
+    --accent-ink: #0f0f0d;
+    --selection: #d4ff2e;
+    --cta-hover: #d4ff2e;
+    --shot-dim: rgb(0 0 0 / 0.14);
+    --overprint: screen;
+    --grain: 0.07;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 30px 60px -30px rgb(0 0 0 / 0.8);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #121210;
-  --surface: #1b1a18;
-  --ink: #edebe5;
-  --graphite: #9b978e;
-  --hairline: #2a2926;
-  --hairline-strong: #3a3834;
-  --accent: #7f93ff;
-  --accent-ink: #121210;
-  --selection: #262f6b;
-  --cta-hover: #ffffff;
-  --shot-dim: rgb(0 0 0 / 0.12);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+  --paper: #0f0f0d;
+  --surface: #181816;
+  --ink: #f0ece2;
+  --graphite: #a39f95;
+  --hairline: #262522;
+  --hairline-strong: #3d3b36;
+  --blue: #3442ff;
+  --lime: #d4ff2e;
+  --lime-ink: #0f0f0d;
+  --accent: #8c96ff;
+  --accent-ink: #0f0f0d;
+  --selection: #d4ff2e;
+  --cta-hover: #d4ff2e;
+  --shot-dim: rgb(0 0 0 / 0.14);
+  --overprint: screen;
+  --grain: 0.07;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 30px 60px -30px rgb(0 0 0 / 0.8);
   color-scheme: dark;
 }
 
@@ -61,6 +79,10 @@
   --color-hairline-strong: var(--hairline-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
+  --color-blue: var(--blue);
+  --color-lime: var(--lime);
+  --color-lime-ink: var(--lime-ink);
+  --font-display: var(--font-anybody), var(--font-schibsted), sans-serif;
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -96,7 +118,7 @@ body {
 
 ::selection {
   background: var(--selection);
-  color: var(--ink);
+  color: var(--lime-ink);
 }
 
 :focus-visible {
@@ -117,6 +139,217 @@ h3 {
 
 p {
   text-wrap: pretty;
+}
+
+/* ---------- OVERPRINT: print vocabulary ---------- */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Grain: a fine paper/charcoal tooth over the whole sheet. */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 1002;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 1.4 -0.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+/* Registration target and crop marks. */
+.regmark {
+  color: var(--graphite);
+  flex: none;
+}
+.crop-marks {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+}
+.crop {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--graphite);
+  border-style: solid;
+  border-width: 0;
+}
+.crop--tl { left: -10px; top: -10px; border-right-width: 1px; border-bottom-width: 1px; }
+.crop--tr { right: -10px; top: -10px; border-left-width: 1px; border-bottom-width: 1px; }
+.crop--bl { left: -10px; bottom: -10px; border-right-width: 1px; border-top-width: 1px; }
+.crop--br { right: -10px; bottom: -10px; border-left-width: 1px; border-top-width: 1px; }
+
+/* Colour control strip. */
+.color-bar {
+  display: inline-flex;
+  flex: none;
+}
+.color-bar > span {
+  width: 12px;
+  height: 12px;
+}
+
+/* Oversized outline plate numbers that the section's content prints over. */
+.plate-number {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 60;
+  line-height: 0.75;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hairline-strong);
+}
+
+/* Lime highlighter: the second ink, wiped on like a marker stroke. */
+.highlight {
+  background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 0 / 100% 100%;
+  color: var(--lime-ink);
+  padding: 0 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.js .hero-spec .highlight {
+  animation: marker 700ms var(--ease-out) 950ms backwards;
+}
+@keyframes marker {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--lime);
+  box-shadow: 0 0 0 3px rgb(212 255 46 / 0.25);
+}
+
+/* ---------- Hero (Plate 00) ---------- */
+
+.hero-reg {
+  position: absolute;
+  z-index: 2;
+}
+.hero-reg--tl { left: 14px; top: 70px; }
+.hero-reg--tr { right: 14px; top: 104px; }
+.hero-reg--bl { left: 14px; bottom: 14px; }
+.hero-reg--br { right: 14px; bottom: 14px; }
+
+.hero-name {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(4.25rem, 18.5vw, 19rem);
+  line-height: 0.8;
+  letter-spacing: -0.012em;
+  user-select: none;
+}
+.hn-plate {
+  display: block;
+}
+.hn-plate--ink {
+  color: var(--ink);
+}
+.hn-plate--blue {
+  position: absolute;
+  inset: 0;
+  color: var(--blue);
+  mix-blend-mode: var(--overprint);
+  pointer-events: none;
+  transform: translate3d(6px, 4px, 0);
+}
+.hn-line {
+  display: block;
+  white-space: nowrap;
+}
+.hn-ch {
+  font-variation-settings: "wdth" 72;
+}
+/* Before the script runs the letters sit at their resting width; the entrance opens them. */
+.js .hn-ch {
+  font-variation-settings: "wdth" 50;
+}
+
+@media (min-width: 1024px) {
+  .hero-spec {
+    z-index: 3;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    padding: 28px 30px 30px;
+    box-shadow: var(--shadow);
+  }
+}
+
+/* ---------- Rulers (Rulers.tsx) ---------- */
+
+.rulers {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .rulers {
+    display: block;
+  }
+  .ruler {
+    position: fixed;
+    z-index: 40;
+    pointer-events: none;
+    --tick: var(--hairline-strong);
+  }
+  .ruler--top {
+    left: 0;
+    right: 0;
+    top: 56px;
+    height: 7px;
+    background: repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 40px) 0 0 / 100% 7px,
+      repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 8px) 0 4px / 100% 3px;
+    background-repeat: no-repeat;
+  }
+  .ruler--left {
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    width: 7px;
+    background: repeating-linear-gradient(180deg, var(--tick) 0 1px, transparent 1px 40px) 0 0 / 7px 100%,
+      repeating-linear-gradient(180deg, var(--tick) 0 1px, transparent 1px 8px) 4px 0 / 3px 100%;
+    background-repeat: no-repeat;
+  }
+  .ruler__mark {
+    position: absolute;
+    background: var(--blue);
+  }
+  .ruler__mark--x {
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 11px;
+  }
+  .ruler__mark--y {
+    left: 0;
+    top: 0;
+    width: 11px;
+    height: 1px;
+  }
+  .ruler__readout {
+    position: fixed;
+    z-index: 40;
+    right: 14px;
+    top: 66px;
+    display: flex;
+    gap: 12px;
+    padding: 5px 8px;
+    border: 1px solid var(--hairline);
+    background: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--graphite);
+    pointer-events: none;
+  }
 }
 
 /* ---------- Links ----------
@@ -212,20 +445,440 @@ p {
   }
 }
 
-/* ---------- Work index ---------- */
+/* ---------- Plate heads (PlateHeader.tsx) ---------- */
 
-.work-name {
-  transition:
-    color 160ms ease,
-    transform 200ms var(--ease-out);
+.plate-head__number {
+  position: absolute;
+  right: -0.04em;
+  top: 0.1em;
+  font-size: clamp(7rem, 24vw, 22rem);
+  line-height: 0.75;
+  pointer-events: none;
+  user-select: none;
+}
+.plate-title {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3.25rem, 11vw, 10.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 68;
+}
+
+/* ---------- Contact: the question in two inks ---------- */
+
+.contact-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 10.5vw, 10rem);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 66;
+  max-width: 13ch;
+}
+.contact-title__ink {
+  position: relative;
+  display: block;
+  color: var(--ink);
+}
+.contact-title__blue {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--blue);
+  mix-blend-mode: var(--overprint);
+  transform: translate(7px, 5px);
+  pointer-events: none;
+}
+.contact-email {
+  color: var(--ink);
+  font-variation-settings: "wdth" 85;
+}
+.contact-email .highlight {
+  transition: background-size 400ms var(--ease-out);
+  background-position: 0 100%;
+  background-size: 100% 100%;
+}
+@media (hover: hover) and (pointer: fine) {
+  .contact-email:hover .highlight {
+    background-size: 100% 18%;
+    color: var(--ink);
+  }
+}
+
+/* ---------- About: the process strip ---------- */
+
+.process-word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5.5vw, 5rem);
+  line-height: 0.85;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 80;
+}
+.process-step:last-child .process-word {
+  color: var(--blue);
+}
+.process-arrow {
+  display: none;
+}
+@media (min-width: 640px) {
+  /* The step hands over to the next one: a short arrow sitting on the column rule. */
+  .process-arrow {
+    display: block;
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    background: var(--paper);
+    border-top: 1px solid var(--hairline-strong);
+    border-right: 1px solid var(--hairline-strong);
+    transform: rotate(45deg);
+  }
+}
+
+/* ---------- Work: the exhibition (Projects.tsx) ---------- */
+
+/* Sticky index: which plate you are on, in the project's own colour. */
+.work-index {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 20;
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+}
+.work-index ol {
+  scrollbar-width: none;
+}
+.work-index__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--graphite);
+  transition: color 150ms ease;
+}
+.work-index__link::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--tone);
+}
+.work-index__link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: -1px;
+  height: 2px;
+  background: var(--lime);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 240ms var(--ease-out);
+}
+.work-index__link[aria-current] {
+  color: var(--ink);
+}
+.work-index__link[aria-current]::after {
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-index__link:hover {
+    color: var(--ink);
+  }
+}
+
+/* Layout: media and text trade sides from plate to plate; the name overprints the frame. */
+.exhibit-grid {
+  display: grid;
+  gap: 2.5rem;
 }
 @media (min-width: 1024px) {
-  [data-work-list][data-hovering] li:not([data-active]) .work-name {
-    color: var(--graphite);
+  .exhibit-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0 2.5rem;
+    align-items: center;
   }
-  [data-work-list][data-hovering] li[data-active] .work-name {
-    transform: translateX(0.375rem);
+  .exhibit[data-side="right"] .exhibit-media {
+    grid-column: 1 / span 8;
   }
+  .exhibit[data-side="right"] .exhibit-text {
+    grid-column: 9 / span 4;
+  }
+  .exhibit[data-side="right"] .exhibit-name {
+    margin-left: -9vw;
+  }
+  .exhibit[data-side="left"] .exhibit-media {
+    grid-column: 5 / span 8;
+    grid-row: 1;
+  }
+  .exhibit[data-side="left"] .exhibit-text {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+  }
+  .exhibit[data-side="left"] .exhibit-name {
+    margin-right: -9vw;
+  }
+}
+.exhibit-text {
+  z-index: 2;
+}
+
+/* The project's colour, as an offset block behind the frame. */
+.exhibit-slab {
+  position: absolute;
+  inset: 2rem -0.75rem -0.75rem 2rem;
+  background: var(--tone);
+}
+.exhibit[data-side="left"] .exhibit-slab {
+  inset: 2rem 2rem -0.75rem -0.75rem;
+}
+@media (min-width: 1024px) {
+  .exhibit-slab {
+    inset: 3.5rem -2rem -2rem 3.5rem;
+  }
+  .exhibit[data-side="left"] .exhibit-slab {
+    inset: 3.5rem 3.5rem -2rem -2rem;
+  }
+}
+
+/* An outline plate numeral behind it all, drifting against the scroll. */
+.exhibit-numeral {
+  position: absolute;
+  top: -0.42em;
+  left: -0.06em;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(7rem, 20vw, 19rem);
+  line-height: 1;
+  font-variation-settings: "wdth" 60;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hairline-strong);
+  pointer-events: none;
+  user-select: none;
+}
+.exhibit[data-side="left"] .exhibit-numeral {
+  left: auto;
+  right: -0.06em;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .exhibit-numeral {
+      animation: numeral-drift linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes numeral-drift {
+  from {
+    transform: translateY(18%);
+  }
+  to {
+    transform: translateY(-18%);
+  }
+}
+
+/* The name: display type with a paper outline, so it reads where it crosses the frame. */
+.exhibit-name {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 6vw, 6.25rem);
+  line-height: 0.84;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 62;
+  -webkit-text-stroke: 10px var(--paper);
+  paint-order: stroke fill;
+  padding-top: 0.06em;
+}
+.exhibit-name a {
+  color: var(--ink);
+}
+/* On hover the blue plate prints over it, slightly out of register. */
+.exhibit-name::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0.06em 0 0.12em 0;
+  color: var(--blue);
+  -webkit-text-stroke: 0;
+  mix-blend-mode: var(--overprint);
+  opacity: 0;
+  transform: translate(0, 0);
+  transition:
+    opacity 150ms ease,
+    transform 200ms var(--ease-out);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .exhibit:has(.exhibit-name a:hover, .exhibit-frame:hover) .exhibit-name::after {
+    opacity: 1;
+    transform: translate(6px, 4px);
+    transition-duration: 200ms, 320ms;
+  }
+}
+.exhibit-name a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.stack-chip {
+  padding: 4px 8px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--graphite);
+}
+
+/* Frames: a browser for the web projects, a phone for the Flutter app. */
+.exhibit-frame {
+  position: relative;
+  z-index: 1;
+}
+.browser-frame {
+  overflow: hidden;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.45);
+}
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--hairline-strong);
+}
+.browser-dots {
+  display: flex;
+  gap: 6px;
+}
+.browser-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  border: 1px solid var(--hairline-strong);
+}
+.browser-url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--graphite);
+}
+.browser-tag {
+  padding: 3px 7px;
+  border-radius: 2px;
+  background: var(--lime);
+  color: var(--lime-ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.browser-view {
+  position: relative;
+  height: clamp(300px, 44vw, 580px);
+  overflow: hidden;
+  cursor: pointer;
+}
+.browser-view.drag-frame {
+  cursor: grab;
+}
+
+.phone-frame {
+  width: min(290px, 78%);
+  aspect-ratio: 9 / 18.5;
+  margin: 2.5rem auto;
+  overflow: hidden;
+  border: 10px solid #121210;
+  border-radius: 40px;
+  box-shadow:
+    0 0 0 1px var(--hairline-strong),
+    0 30px 60px -30px rgb(0 0 0 / 0.5);
+  cursor: pointer;
+}
+.phone-notch {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  z-index: 2;
+  width: 76px;
+  height: 20px;
+  border-radius: 99px;
+  background: #121210;
+  transform: translateX(-50%);
+}
+
+/* Facts in a frame, set on the project's own colour. */
+.frame-text {
+  background: var(--tone);
+  color: #f6f4ee;
+}
+.frame-text .text-graphite {
+  color: rgb(246 244 238 / 0.72);
+}
+.frame-text .border-hairline,
+.frame-text .border-hairline-strong {
+  border-color: rgb(246 244 238 / 0.22);
+}
+.frame-item {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 3.4vw, 3.25rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 72;
+}
+.phone-frame .frame-item {
+  font-size: 1.6rem;
+}
+.phone-frame .frame-text {
+  padding-top: 2.75rem;
+}
+
+/* Arrival: frame and slab wipe open from the edge you scroll toward them from. The hidden
+   states carry no transition, so ScrollMotion can swap direction before revealing. */
+.exhibit-reveal {
+  /* open past the edges: crop marks and the frame shadow sit outside the box */
+  clip-path: inset(-40px);
+}
+.exhibit.in-view .exhibit-reveal {
+  transition: clip-path 1000ms var(--ease-drawer);
+  transition-delay: calc(var(--sd, 0ms) + 80ms);
+}
+.exhibit.in-view .exhibit-slab {
+  transition-delay: calc(var(--sd, 0ms) + 240ms);
+}
+.js .exhibit:not(.in-view) .exhibit-reveal {
+  clip-path: inset(100% -40px -40px -40px);
+}
+.js .exhibit[data-enter="up"]:not(.in-view) .exhibit-reveal {
+  clip-path: inset(-40px -40px 100% -40px);
 }
 
 /* Screenshots of other people's light UIs: a touch dimmer on the dark theme. */
@@ -237,44 +890,6 @@ p {
   pointer-events: none;
   border-radius: inherit;
   background: var(--shot-dim);
-}
-.shot__img {
-  transition: transform 400ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .work-row:hover .shot .shot__img {
-    transform: scale(1.025);
-    transition-duration: 600ms;
-  }
-}
-
-/* Row as one link: an arrow after the name steps toward where it goes, and keyboard focus
-   rings the whole row the link covers. */
-.work-arrow {
-  transition:
-    transform 120ms var(--ease-out),
-    color 120ms ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .work-row:hover .work-arrow {
-    transform: translate(3px, -3px);
-    color: var(--ink);
-    transition-duration: 180ms;
-  }
-}
-.work-name:focus-visible .work-arrow {
-  transform: translate(3px, -3px);
-  color: var(--ink);
-}
-@supports selector(:has(*)) {
-  .work-name:focus-visible {
-    outline: none;
-  }
-  .work-row:has(.work-name:focus-visible) {
-    outline: 2px solid var(--accent);
-    outline-offset: 6px;
-    border-radius: 4px;
-  }
 }
 
 /* A preview you can drag through like a small browser (dragScroll.ts). Vertical touch
@@ -356,7 +971,9 @@ p {
   color: var(--graphite);
 }
 .skill[data-current] {
-  text-decoration-color: var(--accent);
+  text-decoration-color: transparent;
+  background-color: var(--lime);
+  color: var(--lime-ink);
 }
 .skill--plain {
   text-decoration: none;
@@ -365,8 +982,8 @@ button.skill {
   cursor: pointer;
 }
 @media (hover: hover) and (pointer: fine) {
-  button.skill:hover {
-    text-decoration-color: var(--accent);
+  button.skill:not([data-current]):hover {
+    text-decoration-color: var(--blue);
   }
 }
 
@@ -381,8 +998,8 @@ button.skill {
 }
 /* Active links draw themselves from the skill to the project (pathLength = 1). */
 .skill-link--active {
-  stroke: var(--accent);
-  stroke-width: 1.25;
+  stroke: var(--blue);
+  stroke-width: 1.75;
   opacity: 1;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -393,6 +1010,7 @@ button.skill {
   transition-duration: 460ms;
 }
 .project-node {
+  font-variation-settings: "wdth" 72;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -401,8 +1019,7 @@ button.skill {
 .project-node__dot {
   width: 6px;
   height: 6px;
-  border-radius: 999px;
-  background: var(--accent);
+  background: var(--blue);
   transform: scale(0.5);
   opacity: 0;
   transition:
@@ -435,13 +1052,15 @@ button.skill {
 .smart-cursor__label {
   display: inline-block;
   padding: 4px 8px;
-  border-radius: 4px;
-  background: var(--ink);
-  color: var(--paper);
-  /* Readable over light screenshots on the dark theme too. */
+  border-radius: 2px;
+  background: var(--lime);
+  color: #121210;
+  /* A lime tag: readable over screenshots, slabs and paper in both themes. */
   box-shadow:
-    0 0 0 1px var(--hairline-strong),
+    0 0 0 1px rgb(18 18 16 / 0.85),
     0 2px 8px -2px rgb(0 0 0 / 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.2;
@@ -510,26 +1129,6 @@ button.skill {
     transform: translateY(-0.3em);
     filter: blur(2px);
   }
-}
-
-/* ---------- Hero name -> nav name (HeroTravel.tsx drives transform and opacity) ---------- */
-
-.hero-name {
-  position: relative;
-  z-index: 60; /* travels over the fixed bar */
-  display: inline-block;
-  transform-origin: 0 0;
-  pointer-events: none; /* never blocks the logo link it settles over */
-  will-change: transform;
-}
-html[data-menu="open"] .hero-name {
-  z-index: auto;
-}
-.nav-name {
-  opacity: 0;
-}
-.nav-name[data-in] {
-  opacity: 1;
 }
 
 /* ---------- Mobile menu ---------- */
@@ -731,9 +1330,6 @@ html[data-menu="open"] .hero-name {
     transform: none;
     transition: opacity 120ms ease;
   }
-  .nav-name {
-    transition: opacity 200ms ease;
-  }
 }
 
 /* ---------- Ink bleed theme transition (src/ink) ---------- */
@@ -812,4 +1408,14 @@ html.theme-fade *::after {
    shifts all snapshot text downwards. Only that probe image matches this selector. */
 img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] {
   display: inline !important;
+}
+
+/* Reduced motion for the exhibition: plates arrive by fade, nothing wipes or drifts. */
+@media (prefers-reduced-motion: reduce) {
+  .js .exhibit .exhibit-reveal {
+    clip-path: none !important;
+  }
+  .exhibit-name::after {
+    transform: none !important;
+  }
 }

@@ -1,11 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Schibsted_Grotesk, Geist_Mono } from "next/font/google";
+import { Anybody, Schibsted_Grotesk, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
 
 const sans = Schibsted_Grotesk({
   variable: "--font-schibsted",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Display face: a variable width axis (50–150%) the hero and plates bend with the cursor.
+const display = Anybody({
+  variable: "--font-anybody",
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["wdth"],
   display: "swap",
 });
 
@@ -40,12 +49,12 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   // Dark is the default theme; a visitor's own choice is restored before paint.
-  themeColor: "#121210",
+  themeColor: "#0f0f0d",
   colorScheme: "dark light",
 };
 
 // Runs before paint: dark by default, or the visitor's saved choice; flags JS for motion.
-const themeScript = `(function(){var d=document.documentElement;d.classList.add('js');var t='dark';try{var s=localStorage.getItem('theme');if(s==='light'||s==='dark')t=s}catch(e){}d.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#121210':'#f5f3ee')})();`;
+const themeScript = `(function(){var d=document.documentElement;d.classList.add('js');var t='dark';try{var s=localStorage.getItem('theme');if(s==='light'||s==='dark')t=s}catch(e){}d.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#0f0f0d':'#f0ece2')})();`;
 
 export default function RootLayout({
   children,
@@ -55,7 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${mono.variable}`}
+      className={`${sans.variable} ${mono.variable} ${display.variable}`}
       suppressHydrationWarning
     >
       <head>

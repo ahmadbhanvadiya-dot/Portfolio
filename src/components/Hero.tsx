@@ -1,8 +1,11 @@
 import { projects, site } from "@/data/site";
 import HeroInk from "./HeroInk";
+import HeroName from "./HeroName";
 import { ArrowDown, ArrowUpRight } from "./Icons";
+import { ColorBar, RegMark } from "./print";
 
 const live = (slug: string) => projects.find((p) => p.slug === slug)?.live ?? site.github;
+const liveCount = projects.filter((p) => p.live).length;
 
 function Inline({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -12,84 +15,89 @@ function Inline({ href, children }: { href: string; children: React.ReactNode })
   );
 }
 
-const metaLinks = [
-  { label: "LinkedIn", href: site.linkedin, external: true },
-  { label: "Résumé", href: site.resume, external: true },
-];
-
+/**
+ * Plate 00, the opening scene: the name at poster scale in two inks (HeroName), ink you can
+ * drop on the sheet (HeroInk), registration marks framing it, and a spec panel that says
+ * what is built and where to look. Full-bleed; the content keeps the 1200px grid.
+ */
 export default function Hero() {
   return (
-    <section
-      id="home"
-      data-ink-fixh
-      className="relative mx-auto mb-14 flex min-h-[min(100svh,56rem)] max-w-[1200px] flex-col px-5 pt-14 sm:mb-20 sm:px-8 lg:px-10"
-    >
+    <section id="home" data-ink-fixh className="hero relative flex min-h-[100svh] flex-col overflow-hidden pt-14">
       <HeroInk />
-      <div className="flex flex-1 flex-col justify-center py-16 sm:py-24">
-        <h1 className="max-w-[15ch] text-[clamp(2.5rem,7.4vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.04em]">
-          <span className="enter block" style={{ ["--i" as string]: 0 }}>
-            {/* Travels into the navigation bar as the page scrolls (HeroTravel.tsx). */}
-            <span data-hero-name data-ink-layer="travel" className="hero-name">
-              Ahmad Bhanvadiya.
-            </span>
-          </span>
-          <span className="enter block text-graphite" style={{ ["--i" as string]: 1 }}>
-            I build things you can open.
-          </span>
-        </h1>
 
-        <p
-          className="enter mt-8 max-w-[52ch] text-[1.0625rem] leading-relaxed text-graphite sm:mt-10 sm:text-[1.25rem] sm:leading-[1.55]"
-          style={{ ["--i" as string]: 3 }}
-        >
-          Computer science student. So far: a bus-route planner for the Smart India Hackathon{" "}
-          (<Inline href={live("smartcommute")}>SmartCommute AI</Inline>), an emergency health profile
-          behind a QR code (<Inline href={live("vitl")}>Vitl</Inline>) and a record tool for field drug
-          tests (<Inline href={live("narcolens")}>NarcoLens</Inline>). All live, all on{" "}
-          <Inline href={site.github}>GitHub</Inline>.
-        </p>
+      {/* Sheet furniture: registration marks in the corners, the plate's slug line. */}
+      <RegMark className="hero-reg hero-reg--tl" />
+      <RegMark className="hero-reg hero-reg--tr" />
+      <RegMark className="hero-reg hero-reg--bl" />
+      <RegMark className="hero-reg hero-reg--br" />
 
-        <div
-          className="enter mt-10 flex flex-wrap items-center gap-x-7 gap-y-4"
-          style={{ ["--i" as string]: 4 }}
-        >
-          <a
-            href="#work"
-            data-magnetic
-            className="press cta group inline-flex h-11 items-center gap-2.5 rounded-[4px] bg-ink pl-5 pr-4 text-[15px] font-medium text-paper"
-          >
-            View selected work
-            <ArrowDown className="transition-transform duration-150 ease-out group-hover:translate-y-0.5" />
-          </a>
-          <a href="#contact" data-magnetic className="link-strong -my-3 py-3 text-[15px] font-medium">
-            Get in touch
-          </a>
+      <div className="relative mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-5 sm:px-8 lg:px-12">
+        <div className="enter flex items-center justify-between gap-4 pt-6 font-mono text-[11px] uppercase tracking-[0.08em] text-graphite sm:text-[12px]" style={{ ["--i" as string]: 0 }}>
+          <span>Plate 00 / Portfolio</span>
+          <span className="hidden sm:inline">Computer science / Full-stack / Python</span>
+          <span>
+            {projects.length} built / {liveCount} live
+          </span>
         </div>
-      </div>
 
-      <div
-        className="enter flex flex-col gap-4 border-t border-hairline py-5 text-[13px] sm:flex-row sm:items-center sm:justify-between"
-        style={{ ["--i" as string]: 5 }}
-      >
-        <p className="flex items-center gap-2.5 text-ink">
-          <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
-          Open to internships &amp; collaborations
-        </p>
-        <ul className="flex gap-6 font-mono text-graphite">
-          {metaLinks.map((l) => (
-            <li key={l.label}>
+        <div className="relative flex flex-1 flex-col justify-center py-8 lg:py-4">
+          <HeroName />
+
+          {/* The spec panel sits in the gap beside the short middle line on large screens. */}
+          <div className="hero-spec enter mt-10 max-w-[30rem] lg:absolute lg:right-0 lg:top-1/2 lg:mt-0 lg:-translate-y-[10%]" style={{ ["--i" as string]: 3 }}>
+            <p className="font-display text-[clamp(1.75rem,3vw,2.6rem)] font-bold uppercase leading-[0.95] tracking-[-0.01em]" style={{ fontVariationSettings: '"wdth" 112' }}>
+              <span className="highlight">I build things you can open.</span>
+            </p>
+            <p className="mt-6 text-[1.0625rem] leading-relaxed text-graphite">
+              Computer science student. So far: a bus-route planner for the Smart India Hackathon{" "}
+              (<Inline href={live("smartcommute")}>SmartCommute AI</Inline>), an emergency health profile
+              behind a QR code (<Inline href={live("vitl")}>Vitl</Inline>) and a record tool for field drug
+              tests (<Inline href={live("narcolens")}>NarcoLens</Inline>). All live, all on{" "}
+              <Inline href={site.github}>GitHub</Inline>.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
               <a
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link nudge -my-3 inline-flex items-center gap-1 py-3 hover:text-ink"
+                href="#work"
+                data-magnetic
+                className="press cta group inline-flex h-12 items-center gap-3 rounded-[3px] bg-ink pl-5 pr-4 font-mono text-[13px] uppercase tracking-[0.06em] text-paper"
               >
-                {l.label}
-                <ArrowUpRight size={12} className="nudge__arrow" />
+                Enter the work
+                <ArrowDown className="transition-transform duration-150 ease-out group-hover:translate-y-0.5" />
               </a>
-            </li>
-          ))}
-        </ul>
+              <a href="#contact" data-magnetic className="link-strong -my-3 py-3 font-mono text-[13px] uppercase tracking-[0.06em]">
+                Get in touch
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="enter flex flex-col gap-4 border-t border-hairline py-5 text-[13px] sm:flex-row sm:items-center sm:justify-between" style={{ ["--i" as string]: 5 }}>
+          <p className="flex items-center gap-4 text-ink">
+            <ColorBar />
+            <span className="flex items-center gap-2.5">
+              <span className="status-dot" aria-hidden="true" />
+              Open to internships &amp; collaborations
+            </span>
+          </p>
+          <ul className="flex gap-6 font-mono text-graphite">
+            {[
+              { label: "LinkedIn", href: site.linkedin },
+              { label: "Résumé", href: site.resume },
+            ].map((l) => (
+              <li key={l.label}>
+                <a
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link nudge -my-3 inline-flex items-center gap-1 py-3 hover:text-ink"
+                >
+                  {l.label}
+                  <ArrowUpRight size={12} className="nudge__arrow" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

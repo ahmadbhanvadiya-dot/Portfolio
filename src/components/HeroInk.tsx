@@ -134,9 +134,10 @@ export default function HeroInk() {
     let ink: [number, number, number] = [0.93, 0.92, 0.9];
     let strength = 0.12;
     const readTheme = () => {
+      // Drops print in the ultramarine process ink: a second ink on the sheet.
       const dark = document.documentElement.getAttribute("data-theme") !== "light";
-      ink = dark ? [0.93, 0.92, 0.9] : [0.086, 0.082, 0.075];
-      strength = dark ? 0.11 : 0.09;
+      ink = dark ? [0.204, 0.259, 1] : [0.141, 0.2, 0.94];
+      strength = dark ? 0.46 : 0.3;
       kick();
     };
     const themeObs = new MutationObserver(readTheme);

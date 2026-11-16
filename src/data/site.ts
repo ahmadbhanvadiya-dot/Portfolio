@@ -32,11 +32,17 @@ export type Project = {
    * app's code, or the features its README lists.
    */
   index?: { label: string; items: string[] };
+  /** The plate's own atmosphere: a colour taken from the project's real interface. */
+  tone: string;
+  /** How the project is framed on its plate. */
+  frame: "browser" | "phone";
 };
 
 export const projects: Project[] = [
   {
     slug: "smartcommute",
+    tone: "#2563eb",
+    frame: "browser",
     name: "SmartCommute AI",
     category: "Web + mobile app",
     description:
@@ -48,6 +54,8 @@ export const projects: Project[] = [
   },
   {
     slug: "narcolens",
+    tone: "#1d3557",
+    frame: "browser",
     name: "NarcoLens",
     category: "Web app",
     description:
@@ -59,6 +67,8 @@ export const projects: Project[] = [
   },
   {
     slug: "vitl",
+    tone: "#4a5a73",
+    frame: "browser",
     name: "Vitl",
     category: "Health tech",
     description:
@@ -71,6 +81,8 @@ export const projects: Project[] = [
   },
   {
     slug: "freshlify",
+    tone: "#3a9d5d",
+    frame: "phone",
     name: "Freshlify",
     category: "Mobile app",
     description:
@@ -82,6 +94,8 @@ export const projects: Project[] = [
   },
   {
     slug: "meridian",
+    tone: "#2d5016",
+    frame: "browser",
     name: "The Meridian Restro",
     category: "Website",
     description:

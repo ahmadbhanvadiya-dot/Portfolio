@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { navLinks, site } from "@/data/site";
+import TextMorph from "./TextMorph";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
@@ -130,7 +131,7 @@ export default function Navbar() {
     >
       <nav
         aria-label="Primary"
-        className="relative z-10 mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 sm:px-8 lg:px-10"
+        className="relative z-10 mx-auto flex h-14 max-w-[1400px] items-center justify-between px-5 sm:px-8 lg:px-12"
       >
         <a
           href="#home"
@@ -144,14 +145,19 @@ export default function Navbar() {
           >
             AB
           </span>
-          {/* The hero's name arrives here as the page scrolls (HeroTravel.tsx). */}
-          <span className="nav-name text-[15px] font-medium tracking-[-0.01em]">
-            {site.name}.
+          {/* Section readout: where you are on the sheet, morphing as you scroll. */}
+          <span className="font-mono text-[12px] uppercase tracking-[0.08em]">
+            <TextMorph
+              parts={[
+                { text: `${String(Math.max(0, navLinks.findIndex((l) => l.id === active))).padStart(2, "0")} / `, className: "text-graphite" },
+                { text: active === "home" ? "Index" : (navLinks.find((l) => l.id === active)?.label ?? "") },
+              ]}
+            />
           </span>
         </a>
 
         <div className="flex items-center gap-1 md:gap-2">
-          <ul className="mr-2 hidden items-center gap-7 md:flex">
+          <ul className="mr-2 hidden items-center gap-6 md:flex">
             {navLinks.map((l) => {
               const isActive = active === l.id;
               return (
@@ -159,17 +165,21 @@ export default function Navbar() {
                   <a
                     href={`#${l.id}`}
                     aria-current={isActive ? "true" : undefined}
-                    className={`relative py-2.5 text-[14px] transition-colors duration-150 ${
+                    className={`nav-link relative py-2.5 font-mono text-[12px] uppercase tracking-[0.08em] transition-colors duration-150 ${
                       isActive ? "text-ink" : "text-graphite hover:text-ink"
                     }`}
                   >
+                    <span className="mr-1.5 text-[10px] text-graphite" aria-hidden="true">
+                      {String(navLinks.indexOf(l)).padStart(2, "0")}
+                    </span>
+                    {l.label}
+                    {/* Active: a lime bar printed under the label. */}
                     <span
                       aria-hidden="true"
-                      className={`absolute -left-3 top-1/2 size-1 -translate-y-1/2 rounded-full bg-accent transition-[opacity,transform] duration-200 ease-out ${
-                        isActive ? "scale-100 opacity-100" : "scale-50 opacity-0"
+                      className={`absolute inset-x-0 bottom-1 h-[3px] origin-left bg-lime transition-transform duration-200 ease-out ${
+                        isActive ? "scale-x-100" : "scale-x-0"
                       }`}
                     />
-                    {l.label}
                   </a>
                 </li>
               );
