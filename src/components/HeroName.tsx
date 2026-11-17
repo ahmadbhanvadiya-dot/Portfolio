@@ -3,21 +3,18 @@
 import { useEffect, useRef } from "react";
 
 const FIRST = "AHMAD";
-const LAST = "BHANVADIA.";
 
-// Resting width on the Anybody wdth axis (50–150). Phones have no cursor to widen the
-// letters, so the first name rests wide enough to fill the screen there. The surname always
-// rests condensed: it is the long line, sized to fit the column (see .hn-line--last).
-const restingWidth = (line: "first" | "last") =>
-  line === "first" && window.matchMedia("(max-width: 640px)").matches ? 104 : 72;
-// How far a letter right under the cursor opens. The surname opens less, so the line keeps
-// inside its column while the cursor plays across it.
+// Resting width on the Anybody wdth axis (50–150): condensed, so the word can be set as
+// large as the column allows (see .hn-line--first).
+const REST = 72;
+// How far a letter right under the cursor opens; each line's total opening is still capped
+// to the room left in the column.
 const WIDE = { first: 128, last: 92 } as const;
 const RADIUS = 210; // px of influence around the cursor
 
 /**
- * The name as the opening image, printed in two inks, on two lines: AHMAD, then the
- * surname across the full column, never broken. Nothing else shares its rows.
+ * The name as the opening image: AHMAD across the column, printed in two inks. Nothing
+ * else shares its row. (The line machinery below also handles a second line, unused now.)
  *
  * - Cursor-reactive type: every letter widens along Anybody's width axis as the cursor
  *   comes near (a gaussian falloff), and relaxes back as it leaves. Smoothed per letter.
@@ -42,7 +39,7 @@ export default function HeroName() {
     const blues = Array.from(root.querySelectorAll<HTMLElement>(".hn-plate--blue"));
     const n = inkChars.length;
     const line = inkChars.map((c) => (c.closest<HTMLElement>("[data-line]")?.dataset.line === "last" ? "last" : "first"));
-    const base = Float32Array.from(line, (l) => restingWidth(l));
+    const base = Float32Array.from(line, () => REST);
     const wide = Float32Array.from(line, (l) => WIDE[l]);
     const current = reduced ? Float32Array.from(base) : new Float32Array(n).fill(50);
     let centers: { x: number; y: number }[] = [];
@@ -216,10 +213,9 @@ export default function HeroName() {
 
   return (
     <div ref={ref} className="hero-name">
-      <h1 className="sr-only">Ahmad Bhanvadia</h1>
+      <h1 className="sr-only">Ahmad Bhanvadiya</h1>
       <div className="hn-grid">
         {nameLine(FIRST, "first")}
-        {nameLine(LAST, "last")}
       </div>
     </div>
   );

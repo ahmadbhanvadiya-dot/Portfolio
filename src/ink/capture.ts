@@ -236,9 +236,9 @@ export async function capturePage(
         el.style.translate = "none";
       });
       // html2canvas draws text with canvas fillText, which ignores the wdth axis: condensed
-      // type comes out at default width and runs into its neighbour. For the hero's letters
-      // and index names, draw each at wdth 100 and squeeze it back to its real width.
-      doc.querySelectorAll<HTMLElement>(".hn-ch, .hero-index__name").forEach((el) => {
+      // type comes out at default width and runs into its neighbour. For the hero's condensed
+      // lines, draw each at wdth 100 and squeeze it back to its real width.
+      doc.querySelectorAll<HTMLElement>(".hn-ch, .press-line, .press-print__plate-name").forEach((el) => {
         const real = el.getBoundingClientRect().width;
         if (!real) return;
         el.style.display = "inline-block";
