@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 
 const FIRST = "AHMAD";
 const LAST = "BHANVADIA.";
@@ -16,8 +16,8 @@ const WIDE = { first: 128, last: 92 } as const;
 const RADIUS = 210; // px of influence around the cursor
 
 /**
- * The name as the opening image, printed in two inks, on two lines: AHMAD with the spec
- * panel (`aside`) beside it, and the surname across the full column below, never broken.
+ * The name as the opening image, printed in two inks, on two lines: AHMAD, then the
+ * surname across the full column, never broken. Nothing else shares its rows.
  *
  * - Cursor-reactive type: every letter widens along Anybody's width axis as the cursor
  *   comes near (a gaussian falloff), and relaxes back as it leaves. Smoothed per letter.
@@ -29,7 +29,7 @@ const RADIUS = 210; // px of influence around the cursor
  * re-renders. Touch: entrance only, plates fixed in a slight offset. Reduced motion: no
  * entrance, no reaction. Screen readers get the name once (the plates are aria-hidden).
  */
-export default function HeroName({ aside }: { aside?: ReactNode }) {
+export default function HeroName() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -219,7 +219,6 @@ export default function HeroName({ aside }: { aside?: ReactNode }) {
       <h1 className="sr-only">Ahmad Bhanvadia</h1>
       <div className="hn-grid">
         {nameLine(FIRST, "first")}
-        {aside && <div className="hn-aside">{aside}</div>}
         {nameLine(LAST, "last")}
       </div>
     </div>

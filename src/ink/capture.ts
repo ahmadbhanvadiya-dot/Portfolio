@@ -215,9 +215,12 @@ export async function capturePage(
       doc.querySelectorAll<HTMLElement>("[data-pan]").forEach((el) => {
         el.style.transform = "none";
       });
-      // No blend modes in html2canvas: approximate the overprinted blue plate.
+      // No blend modes in html2canvas. Drawn *behind* the ink plate, the blue plate shows only
+      // where it is offset past the letters, which is what multiply (light) and screen (dark)
+      // give on the live page too.
       doc.querySelectorAll<HTMLElement>(".hn-plate--blue, .contact-title__blue").forEach((el) => {
-        el.style.opacity = "0.55";
+        el.style.zIndex = "-1";
+        if (el.parentElement) el.parentElement.style.isolation = "isolate";
       });
       // Scroll-driven numerals: freeze each at the offset it has on the live page.
       const liveNumerals = document.querySelectorAll<HTMLElement>(".exhibit-numeral");
@@ -231,6 +234,22 @@ export async function capturePage(
       });
       doc.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
         el.style.translate = "none";
+      });
+      // html2canvas draws text with canvas fillText, which ignores the wdth axis: condensed
+      // type comes out at default width and runs into its neighbour. For the hero's letters
+      // and index names, draw each at wdth 100 and squeeze it back to its real width.
+      doc.querySelectorAll<HTMLElement>(".hn-ch, .hero-index__name").forEach((el) => {
+        const real = el.getBoundingClientRect().width;
+        if (!real) return;
+        el.style.display = "inline-block";
+        el.style.whiteSpace = "nowrap";
+        el.style.fontVariationSettings = '"wdth" 100';
+        const drawn = el.getBoundingClientRect().width;
+        if (!drawn) return;
+        el.style.width = `${drawn}px`;
+        el.style.marginRight = `${real - drawn}px`;
+        el.style.transformOrigin = "0 0";
+        el.style.transform = `scaleX(${(real / drawn).toFixed(4)})`;
       });
 
       doc.querySelectorAll<HTMLElement>("[data-ink-live]").forEach((el) => {

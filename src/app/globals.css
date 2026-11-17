@@ -240,11 +240,10 @@ p {
 .hero-reg--bl { left: 14px; bottom: 14px; }
 .hero-reg--br { right: 14px; bottom: 14px; }
 
-/* Two lines: AHMAD (with the spec panel beside it on large screens), then the surname across
-   the whole column. Sizes are fitted to the column (container units), so BHANVADIA. stays on
-   one line at every width. --hn-k-* are each line's width in em at its resting wdth; the
-   surname keeps ~6% spare for letters opening under the cursor (HeroName.tsx caps the
-   opening to that spare, so the line never passes the column). */
+/* The stage: AHMAD, then the surname across the whole column. Nothing shares these rows.
+   Sizes are fitted to the column (container units), so BHANVADIA. stays on one line at every
+   width. --hn-k-* are each line's width in em at its resting wdth; the surname keeps ~6%
+   spare for letters opening under the cursor (HeroName.tsx caps the opening to the column). */
 .hero-name {
   position: relative;
   container-type: inline-size;
@@ -262,7 +261,6 @@ p {
   --hn-last: calc(100cqi / (var(--hn-k-last) * 1.06));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "first" "last" "aside";
 }
 .hn-line {
   position: relative;
@@ -270,51 +268,208 @@ p {
   white-space: nowrap;
 }
 .hn-line--first {
-  grid-area: first;
-  /* Phones: the first name opens wide and fills the column, up to 1.6x the surname. */
-  font-size: min(calc(100cqi / var(--hn-k-first-wide)), calc(var(--hn-last) * 1.6));
+  /* Phones: the first name opens wide and fills the column, up to 1.25x the surname. */
+  font-size: min(calc(100cqi / var(--hn-k-first-wide)), calc(var(--hn-last) * 1.25));
 }
 .hn-line--last {
-  grid-area: last;
   font-size: var(--hn-last);
-  padding-top: 0.04em;
+  /* the two lines sit tight, like a set headline, with the blue offset just clearing */
+  margin-top: 0.12em;
 }
-.hn-aside {
-  grid-area: aside;
-  margin-top: 2.5rem;
-  /* the panel is ordinary text, not part of the name */
-  font-family: var(--font-sans);
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: normal;
-  user-select: auto;
+@media (min-width: 641px) {
+  .hn-line--last {
+    margin-top: 0.02em;
+  }
 }
 @media (min-width: 641px) {
   .hn-line--first {
-    font-size: min(calc(100cqi / var(--hn-k-first)), calc(var(--hn-last) * 1.3));
+    font-size: min(calc(100cqi / var(--hn-k-first)), calc(var(--hn-last) * 1.06));
   }
 }
-/* Wide enough for the spec panel beside AHMAD without AHMAD dropping below the surname's
-   size: the panel narrows with the column (22–30rem) and the first name takes the rest. */
-@media (min-width: 1200px) {
-  .hn-grid {
-    --hn-aside-w: clamp(22rem, 32cqi, 30rem);
-    grid-template-columns: minmax(0, 1fr) var(--hn-aside-w);
-    grid-template-areas: "first aside" "last last";
+
+/* Under the name: a rule ties it to the statement panel (right) and the live index (left). */
+.hero-stage {
+  padding-block: 1.75rem 2rem;
+}
+.hero-below {
+  display: grid;
+  gap: 2.25rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+}
+@media (min-width: 1024px) {
+  .hero-stage {
+    padding-block: 1.5rem 1.25rem;
+  }
+  .hero-below {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: 2.5rem;
+    align-items: start;
+    margin-top: 1rem;
   }
-  .hn-line--first {
-    align-self: end;
-    font-size: min(calc((100cqi - var(--hn-aside-w) - 2.5rem) / var(--hn-k-first)), calc(var(--hn-last) * 1.3));
+  .hero-below .hero-index {
+    grid-column: 1 / span 4;
+    grid-row: 1;
   }
-  .hn-aside {
-    align-self: end;
-    margin: 0 0 1.75rem;
-  }
-  .hn-aside .hero-spec {
-    max-width: none;
+  .hero-below .hero-spec {
+    grid-column: 5 / span 8;
+    grid-row: 1;
   }
 }
+
+/* The statement panel: crop-marked, with a slug line, the lime headline and the text. */
+.hero-spec {
+  position: relative;
+  container-type: inline-size;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface);
+  padding: 1rem 1.25rem 1.5rem;
+}
+.hero-spec__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--graphite);
+}
+.hero-spec__body {
+  display: grid;
+  gap: 1.25rem;
+  padding-top: 1.25rem;
+}
+.hero-spec__headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* sized to the panel, so the two lines always fit their column (8.2em at this wdth) */
+  font-size: clamp(1.5rem, 4.3cqi, 2.5rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  font-variation-settings: "wdth" 100;
+}
+.hero-spec__text {
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+.hero-spec__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.75rem;
+}
+@media (min-width: 768px) {
+  .hero-spec {
+    padding: 1.125rem 1.75rem 1.75rem;
+  }
+  /* The headline with its actions under it on the left, the text beside them: read the
+     headline, act, or read on. */
+  .hero-spec__body {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-areas: "head text" "actions text";
+    grid-template-rows: auto 1fr;
+    column-gap: 2rem;
+    row-gap: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  .hero-spec__headline {
+    grid-area: head;
+  }
+  .hero-spec__text {
+    grid-area: text;
+  }
+  .hero-spec__actions {
+    grid-area: actions;
+    align-self: end;
+  }
+  .hero-spec__text {
+    font-size: 1rem;
+  }
+}
+
+/* The live index: real links, numbered like the rest of the sheet. */
+.hero-index__label {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hairline-strong);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--graphite);
+}
+.hero-index__link {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) 14px;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+  transition: color 150ms ease;
+}
+.hero-index__n,
+.hero-index__cat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--graphite);
+}
+/* name, with its category under it: never side by side, so a long name has the row */
+.hero-index__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+/* From 1280px the index column (≥ 330px) holds the longest name and category side by side. */
+@media (min-width: 1280px) {
+  .hero-index__text {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .hero-index__cat {
+    white-space: nowrap;
+  }
+}
+.hero-index__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 90;
+}
+.hero-index__arrow {
+  align-self: center;
+  color: var(--graphite);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-index__link:hover .hero-index__name {
+    color: var(--lime);
+  }
+  :root[data-theme="light"] .hero-index__link:hover .hero-index__name {
+    color: var(--blue);
+  }
+}
+.hero-index__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .hn-plate {
   display: block;
 }
@@ -337,17 +492,6 @@ p {
   font-variation-settings: "wdth" 50;
 }
 
-@media (min-width: 1024px) {
-  .hero-spec {
-    /* above the name: letters opening under the cursor slide beneath the card */
-    position: relative;
-    z-index: 3;
-    background: var(--paper);
-    border: 1px solid var(--hairline);
-    padding: 28px 30px 30px;
-    box-shadow: var(--shadow);
-  }
-}
 
 /* ---------- Rulers (Rulers.tsx) ---------- */
 
