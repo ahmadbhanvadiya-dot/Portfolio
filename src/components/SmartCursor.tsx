@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
  *
  * The native cursor stays. A small label joins it only where it tells you something the
  * pointer alone cannot: "Drag" over a live-site preview or a project node, "Open" over a
- * project row, "Drop ink" over the hero. It follows on a light spring and scales in from
+ * project, "Write" over the email address. It follows on a light spring and scales in from
  * 0.6 (never 0), 160ms in, 120ms out. Targets declare `data-cursor`; a link or button inside
  * a labelled area that has no label of its own hides it, so controls never get the wrong
  * one.

@@ -1,16 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-const LINES = ["AHMAD", "BHAN", "VADIYA."];
+const FIRST = "AHMAD";
+const LAST = "BHANVADIA.";
+
 // Resting width on the Anybody wdth axis (50–150). Phones have no cursor to widen the
-// letters, so the name rests wide enough to fill the screen there.
-const restingWidth = () => (window.matchMedia("(max-width: 640px)").matches ? 104 : 72);
-const WIDE = 128; // a letter right under the cursor
-const RADIUS = 210; // px of influence
+// letters, so the first name rests wide enough to fill the screen there. The surname always
+// rests condensed: it is the long line, sized to fit the column (see .hn-line--last).
+const restingWidth = (line: "first" | "last") =>
+  line === "first" && window.matchMedia("(max-width: 640px)").matches ? 104 : 72;
+// How far a letter right under the cursor opens. The surname opens less, so the line keeps
+// inside its column while the cursor plays across it.
+const WIDE = { first: 128, last: 92 } as const;
+const RADIUS = 210; // px of influence around the cursor
 
 /**
- * The name as the opening image, printed in two inks.
+ * The name as the opening image, printed in two inks, on two lines: AHMAD with the spec
+ * panel (`aside`) beside it, and the surname across the full column below, never broken.
  *
  * - Cursor-reactive type: every letter widens along Anybody's width axis as the cursor
  *   comes near (a gaussian falloff), and relaxes back as it leaves. Smoothed per letter.
@@ -18,11 +25,11 @@ const RADIUS = 210; // px of influence
  *   with the cursor, like a press slightly out of register; the two inks overprint.
  * - Entrance: letters open from condensed to their resting width, staggered, once.
  *
- * Direct style writes in a rAF; nothing re-renders. Touch: entrance only, plates fixed in
- * a slight offset. Reduced motion: no entrance, no reaction; the offset stays as identity.
- * Screen readers get the name once (the plates are aria-hidden).
+ * Direct style writes in a rAF that runs only while something is moving; nothing
+ * re-renders. Touch: entrance only, plates fixed in a slight offset. Reduced motion: no
+ * entrance, no reaction. Screen readers get the name once (the plates are aria-hidden).
  */
-export default function HeroName() {
+export default function HeroName({ aside }: { aside?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,12 +39,24 @@ export default function HeroName() {
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const inkChars = Array.from(root.querySelectorAll<HTMLElement>(".hn-plate--ink .hn-ch"));
     const blueChars = Array.from(root.querySelectorAll<HTMLElement>(".hn-plate--blue .hn-ch"));
-    const blue = root.querySelector<HTMLElement>(".hn-plate--blue");
+    const blues = Array.from(root.querySelectorAll<HTMLElement>(".hn-plate--blue"));
     const n = inkChars.length;
-    const BASE = restingWidth();
-    const current = new Float32Array(n).fill(reduced ? BASE : 50);
-    const target = new Float32Array(n).fill(BASE);
+    const line = inkChars.map((c) => (c.closest<HTMLElement>("[data-line]")?.dataset.line === "last" ? "last" : "first"));
+    const base = Float32Array.from(line, (l) => restingWidth(l));
+    const wide = Float32Array.from(line, (l) => WIDE[l]);
+    const current = reduced ? Float32Array.from(base) : new Float32Array(n).fill(50);
     let centers: { x: number; y: number }[] = [];
+    // Width budget per line: the px between the resting line's end and the column edge. The
+    // letters' combined growth is held inside it every frame, so a line never passes the
+    // column. Measured only while the letters rest; until then a line does not open at all.
+    const lineIdx = { first: [] as number[], last: [] as number[] };
+    line.forEach((l, i) => lineIdx[l].push(i));
+    const spare = { first: 0, last: 0 };
+    // Each letter's growth in px per unit of wdth, measured on the real glyph (it varies a
+    // lot: V opens three times faster than the full stop).
+    const pxPerUnit = new Float32Array(n);
+    const prev = new Float32Array(n);
+    let budgetStale = true;
     let px = -1e4;
     let py = -1e4;
     let mx = 0; // misregistration
@@ -52,11 +71,43 @@ export default function HeroName() {
       inkChars[i].style.fontVariationSettings = v;
       blueChars[i].style.fontVariationSettings = v;
     };
+    const offset = (x: number, y: number) => {
+      const t = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+      for (const b of blues) b.style.transform = t;
+    };
     const measure = () => {
       centers = inkChars.map((c) => {
         const r = c.getBoundingClientRect();
         return { x: r.left + r.width / 2, y: r.top + r.height / 2 + window.scrollY };
       });
+      budgetStale = true;
+    };
+    const measureBudgets = () => {
+      const column = root.getBoundingClientRect();
+      // Sample each glyph a little open and fully open, and keep the steeper slope (growth is
+      // not linear for every letter). Synchronous, restored before anything paints.
+      for (let i = 0; i < n; i++) {
+        const c = inkChars[i];
+        const w = (v: number) => {
+          c.style.fontVariationSettings = `"wdth" ${v}`;
+          return c.getBoundingClientRect().width;
+        };
+        const span = wide[i] - base[i];
+        const w0 = w(base[i]);
+        const near = (w(base[i] + 4) - w0) / 4;
+        const full = (w(wide[i]) - w0) / span;
+        pxPerUnit[i] = Math.max(near, full, 0);
+        set(i, current[i]);
+      }
+      for (const l of ["first", "last"] as const) {
+        const idx = lineIdx[l];
+        if (!idx.length) continue;
+        const end = inkChars[idx[idx.length - 1]].getBoundingClientRect().right;
+        // 0.7: a line opens ~20% more than its glyphs' summed growth (spacing between the
+        // glyphs moves too); tested across cursor sweeps, the line ends ≥6px inside.
+        spare[l] = Math.max(0, column.right - end) * 0.7;
+      }
+      budgetStale = false;
     };
 
     const frame = (now: number) => {
@@ -64,35 +115,62 @@ export default function HeroName() {
       let busy = false;
       const t = (now - born) / 1000;
       for (let i = 0; i < n; i++) {
-        // Entrance: each letter released 45ms after the previous.
-        const released = reduced || t > 0.15 + i * 0.045;
-        let goal = BASE;
-        if (released && fine && centers[i]) {
+        let goal = base[i];
+        if (fine && centers[i]) {
           const dx = px - centers[i].x;
           const dy = py + window.scrollY - centers[i].y;
-          goal = BASE + (WIDE - BASE) * Math.exp(-(dx * dx + dy * dy) / (2 * RADIUS * RADIUS));
+          goal = base[i] + (wide[i] - base[i]) * Math.exp(-(dx * dx + dy * dy) / (2 * RADIUS * RADIUS));
         }
-        target[i] = released ? goal : 50;
-        const next = current[i] + (target[i] - current[i]) * 0.16;
-        if (Math.abs(next - current[i]) > 0.05) busy = true;
-        current[i] = Math.abs(target[i] - next) < 0.05 ? target[i] : next;
+        // Entrance: each letter released 45ms after the previous.
+        const target = t > 0.15 + i * 0.045 ? goal : 50;
+        prev[i] = current[i];
+        const next = current[i] + (target - current[i]) * 0.16;
+        current[i] = Math.abs(target - next) < 0.05 ? target : next;
+      }
+      // Keep each line inside the column: if its letters' combined growth would pass the
+      // spare width, scale every opening letter back by the same share.
+      for (const l of ["first", "last"] as const) {
+        let grown = 0;
+        for (const i of lineIdx[l]) {
+          if (current[i] > base[i]) grown += pxPerUnit[i] * (current[i] - base[i]);
+        }
+        if (grown > spare[l]) {
+          const k = spare[l] / grown;
+          for (const i of lineIdx[l]) {
+            if (current[i] > base[i]) current[i] = base[i] + (current[i] - base[i]) * k;
+          }
+        }
+      }
+      for (let i = 0; i < n; i++) {
+        // Settled (or held at the budget): stop asking for frames.
+        if (Math.abs(current[i] - prev[i]) > 0.05) busy = true;
         set(i, current[i]);
       }
       mx += (tmx - mx) * 0.1;
       my += (tmy - my) * 0.1;
       if (Math.abs(tmx - mx) > 0.05 || Math.abs(tmy - my) > 0.05) busy = true;
-      if (blue) blue.style.transform = `translate3d(${(6 + mx).toFixed(2)}px, ${(4 + my).toFixed(2)}px, 0)`;
+      offset(6 + mx, 4 + my);
+      // Letters at rest after the entrance or a resize: measure how far each line may open.
+      if (budgetStale && t > 1.2 && current.every((w, i) => Math.abs(w - base[i]) < 0.1)) measureBudgets();
       if (busy || t < 1.2) raf = requestAnimationFrame(frame);
     };
     const kick = () => {
       if (!raf) raf = requestAnimationFrame(frame);
     };
 
+    if (reduced) {
+      for (let i = 0; i < n; i++) set(i, base[i]);
+      offset(6, 4);
+      return;
+    }
+
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       px = e.clientX;
       py = e.clientY;
       const r = root.getBoundingClientRect();
+      // Off screen there is nothing to react: let the loop rest.
+      if (r.bottom < 0) return;
       // The blue plate drifts away from the cursor, up to ±10px.
       tmx = Math.max(-10, Math.min(10, ((r.left + r.width / 2 - px) / r.width) * 16));
       tmy = Math.max(-8, Math.min(8, ((r.top + r.height / 2 - py) / r.height) * 12));
@@ -105,11 +183,6 @@ export default function HeroName() {
     };
 
     measure();
-    if (reduced) {
-      for (let i = 0; i < n; i++) set(i, BASE);
-      if (blue) blue.style.transform = "translate3d(6px, 4px, 0)";
-      return;
-    }
     kick();
     window.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
@@ -127,26 +200,28 @@ export default function HeroName() {
     };
   }, []);
 
-  const plate = (kind: "ink" | "blue") => (
-    <span className={`hn-plate hn-plate--${kind}`} aria-hidden="true">
-      {LINES.map((line) => (
-        <span key={line} className="hn-line">
-          {Array.from(line).map((ch, i) => (
-            <span key={i} className="hn-ch">
-              {ch}
-            </span>
-          ))}
-        </span>
-      ))}
+  const chars = (text: string) =>
+    Array.from(text).map((ch, i) => (
+      <span key={i} className="hn-ch">
+        {ch}
+      </span>
+    ));
+  // One line in two inks: the ink plate in flow, the blue plate overprinting it.
+  const nameLine = (text: string, which: "first" | "last") => (
+    <span className={`hn-line hn-line--${which}`} data-line={which} aria-hidden="true">
+      <span className="hn-plate hn-plate--ink">{chars(text)}</span>
+      <span className="hn-plate hn-plate--blue">{chars(text)}</span>
     </span>
   );
 
   return (
     <div ref={ref} className="hero-name">
-      <h1 className="sr-only">Ahmad Bhanvadiya</h1>
-      {/* Ink plate in flow; the blue plate overprints it, slightly out of register. */}
-      {plate("ink")}
-      {plate("blue")}
+      <h1 className="sr-only">Ahmad Bhanvadia</h1>
+      <div className="hn-grid">
+        {nameLine(FIRST, "first")}
+        {aside && <div className="hn-aside">{aside}</div>}
+        {nameLine(LAST, "last")}
+      </div>
     </div>
   );
 }

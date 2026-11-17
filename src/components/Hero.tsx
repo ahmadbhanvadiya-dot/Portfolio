@@ -1,5 +1,4 @@
 import { projects, site } from "@/data/site";
-import HeroInk from "./HeroInk";
 import HeroName from "./HeroName";
 import { ArrowDown, ArrowUpRight } from "./Icons";
 import { ColorBar, RegMark } from "./print";
@@ -16,14 +15,13 @@ function Inline({ href, children }: { href: string; children: React.ReactNode })
 }
 
 /**
- * Plate 00, the opening scene: the name at poster scale in two inks (HeroName), ink you can
- * drop on the sheet (HeroInk), registration marks framing it, and a spec panel that says
- * what is built and where to look. Full-bleed; the content keeps the 1200px grid.
+ * Plate 00, the opening scene: the name at poster scale in two inks (HeroName), with the
+ * spec panel set beside the first name, registration marks framing the sheet. Full-bleed;
+ * the content keeps the 1400px grid.
  */
 export default function Hero() {
   return (
     <section id="home" data-ink-fixh className="hero relative flex min-h-[100svh] flex-col overflow-hidden pt-14">
-      <HeroInk />
 
       {/* Sheet furniture: registration marks in the corners, the plate's slug line. */}
       <RegMark className="hero-reg hero-reg--tl" />
@@ -41,10 +39,10 @@ export default function Hero() {
         </div>
 
         <div className="relative flex flex-1 flex-col justify-center py-8 lg:py-4">
-          <HeroName />
-
-          {/* The spec panel sits in the gap beside the short middle line on large screens. */}
-          <div className="hero-spec enter mt-10 max-w-[30rem] lg:absolute lg:right-0 lg:top-1/2 lg:mt-0 lg:-translate-y-[10%]" style={{ ["--i" as string]: 3 }}>
+          {/* The spec panel sits beside the first name on large screens, after the name below. */}
+          <HeroName
+            aside={
+          <div className="hero-spec enter max-w-[30rem]" style={{ ["--i" as string]: 3 }}>
             <p className="font-display text-[clamp(1.75rem,3vw,2.6rem)] font-bold uppercase leading-[0.95] tracking-[-0.01em]" style={{ fontVariationSettings: '"wdth" 112' }}>
               <span className="highlight">I build things you can open.</span>
             </p>
@@ -69,6 +67,8 @@ export default function Hero() {
               </a>
             </div>
           </div>
+            }
+          />
         </div>
 
         <div className="enter flex flex-col gap-4 border-t border-hairline py-5 text-[13px] sm:flex-row sm:items-center sm:justify-between" style={{ ["--i" as string]: 5 }}>

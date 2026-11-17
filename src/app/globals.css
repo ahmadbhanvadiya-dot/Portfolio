@@ -240,14 +240,80 @@ p {
 .hero-reg--bl { left: 14px; bottom: 14px; }
 .hero-reg--br { right: 14px; bottom: 14px; }
 
+/* Two lines: AHMAD (with the spec panel beside it on large screens), then the surname across
+   the whole column. Sizes are fitted to the column (container units), so BHANVADIA. stays on
+   one line at every width. --hn-k-* are each line's width in em at its resting wdth; the
+   surname keeps ~6% spare for letters opening under the cursor (HeroName.tsx caps the
+   opening to that spare, so the line never passes the column). */
 .hero-name {
   position: relative;
+  container-type: inline-size;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(4.25rem, 18.5vw, 19rem);
   line-height: 0.8;
   letter-spacing: -0.012em;
   user-select: none;
+}
+.hn-grid {
+  /* measured on the live lines at rest: Anybody 800 */
+  --hn-k-last: 4.57; /* BHANVADIA. at wdth 72 */
+  --hn-k-first: 2.77; /* AHMAD at wdth 72 */
+  --hn-k-first-wide: 4.04; /* AHMAD at wdth 104 (phones) */
+  --hn-last: calc(100cqi / (var(--hn-k-last) * 1.06));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "first" "last" "aside";
+}
+.hn-line {
+  position: relative;
+  display: block;
+  white-space: nowrap;
+}
+.hn-line--first {
+  grid-area: first;
+  /* Phones: the first name opens wide and fills the column, up to 1.6x the surname. */
+  font-size: min(calc(100cqi / var(--hn-k-first-wide)), calc(var(--hn-last) * 1.6));
+}
+.hn-line--last {
+  grid-area: last;
+  font-size: var(--hn-last);
+  padding-top: 0.04em;
+}
+.hn-aside {
+  grid-area: aside;
+  margin-top: 2.5rem;
+  /* the panel is ordinary text, not part of the name */
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
+  user-select: auto;
+}
+@media (min-width: 641px) {
+  .hn-line--first {
+    font-size: min(calc(100cqi / var(--hn-k-first)), calc(var(--hn-last) * 1.3));
+  }
+}
+/* Wide enough for the spec panel beside AHMAD without AHMAD dropping below the surname's
+   size: the panel narrows with the column (22–30rem) and the first name takes the rest. */
+@media (min-width: 1200px) {
+  .hn-grid {
+    --hn-aside-w: clamp(22rem, 32cqi, 30rem);
+    grid-template-columns: minmax(0, 1fr) var(--hn-aside-w);
+    grid-template-areas: "first aside" "last last";
+    column-gap: 2.5rem;
+  }
+  .hn-line--first {
+    align-self: end;
+    font-size: min(calc((100cqi - var(--hn-aside-w) - 2.5rem) / var(--hn-k-first)), calc(var(--hn-last) * 1.3));
+  }
+  .hn-aside {
+    align-self: end;
+    margin: 0 0 1.75rem;
+  }
+  .hn-aside .hero-spec {
+    max-width: none;
+  }
 }
 .hn-plate {
   display: block;
@@ -263,10 +329,6 @@ p {
   pointer-events: none;
   transform: translate3d(6px, 4px, 0);
 }
-.hn-line {
-  display: block;
-  white-space: nowrap;
-}
 .hn-ch {
   font-variation-settings: "wdth" 72;
 }
@@ -277,6 +339,8 @@ p {
 
 @media (min-width: 1024px) {
   .hero-spec {
+    /* above the name: letters opening under the cursor slide beneath the card */
+    position: relative;
     z-index: 3;
     background: var(--paper);
     border: 1px solid var(--hairline);
