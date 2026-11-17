@@ -298,7 +298,9 @@ p {
   }
 }
 
-/* Statement: three set lines, the middle one decoding; sized so the longest phrase fits. */
+/* Statement: two set lines, "LESS TALK." in ink and "MORE BUILDS." in the second ink. The
+   second re-decodes whenever a new print comes to the top. Sized to the column (--press-k is
+   "MORE BUILDS." in em, with room for wider scramble glyphs), capped at display size. */
 .press-statement {
   grid-area: statement;
   container-type: inline-size;
@@ -307,41 +309,21 @@ p {
   font-family: var(--font-display);
   font-weight: 800;
   text-transform: uppercase;
-  line-height: 0.95;
-  letter-spacing: -0.005em;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
   font-variation-settings: "wdth" 80;
 }
 .press-line {
   display: block;
   white-space: nowrap;
-  font-size: min(calc(100cqi / var(--press-k, 10.6)), 4.75rem);
+  font-size: min(calc(100cqi / var(--press-k, 6.4)), 6rem);
 }
-.press-phrase {
-  display: inline-block;
-  margin-block: 0.06em;
-  font-variant-numeric: tabular-nums;
+.press-accent {
+  color: var(--lime);
 }
-/* The last line steps in, set off the left edge like a second column of type. */
-.press-tail {
-  padding-left: 1.6em;
-}
-.press-tail-word {
-  display: inline-block;
+/* Lime is a background ink on paper, never text: the light theme sets it in ultramarine. */
+:root[data-theme="light"] .press-accent {
   color: var(--blue);
-}
-:root[data-theme="dark"] .press-tail-word {
-  color: var(--accent);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .press-tail-word {
-    animation: tail-in 520ms var(--ease-out) backwards;
-  }
-}
-@keyframes tail-in {
-  from {
-    clip-path: inset(0 100% 0 0);
-    transform: translateX(-0.15em);
-  }
 }
 
 .press-copy {

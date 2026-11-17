@@ -6,14 +6,8 @@ import { projects, type Project } from "@/data/site";
 import { ArrowDown, ArrowUpRight } from "./Icons";
 import { CropMarks } from "./print";
 
-/** What each project is, in the fewest true words (from its repository and README). */
-const PHRASE: Record<string, string> = {
-  smartcommute: "bus-route planners",
-  narcolens: "field-test records",
-  vitl: "QR health profiles",
-  freshlify: "expiry trackers",
-  meridian: "restaurant sites",
-};
+// The statement. The projects beside it are the proof.
+const ACCENT = "MORE BUILDS.";
 // Where a print leads: the live demo when there is one, else the code.
 const hrefOf = (p: Project) => p.live ?? p.github;
 const hostOf = (p: Project) => (p.live ? new URL(p.live).host : "github.com");
@@ -28,15 +22,16 @@ const POSE = [
   { x: -8, y: -3, r: -7 },
 ];
 const pose = (i: number) => POSE[i % POSE.length];
-const SCRAMBLE = "ABCDEFGHJKLMNPRSTUVWXYZ#/+*<>=";
+// No M or W: the scramble stays about as wide as the words it resolves into.
+const SCRAMBLE = "ABCDEFGHJKLNPRSTUVXYZ#/+*<>=";
 const THROW = 90; // px of drag that sends the top print to the back
 const ON_TOP = "translate(0%, 0%) rotate(-1.5deg)"; // matches .press-print[data-on]
 
 /**
  * The Press: the statement and the proof under the name.
  *
- * - Statement: "I build ___ you can open." The blank decodes through scrambled glyphs
- *   into what each project is; the last word is "read" for a project that has no demo.
+ * - Statement: "Less talk. More builds." The second line re-decodes through scrambled
+ *   glyphs each time a new print comes to the top, so the claim and its proof move together.
  * - Proof pile: a print per project, real screenshots where they exist, the project's own
  *   colour where they don't. The current one lies on top; the rest stay scattered beneath.
  *   Fling the top print sideways to send it to the back; click it to open the project.
@@ -52,15 +47,14 @@ export default function HeroPress() {
   const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const prevActive = useRef(0);
   const n = projects.length;
-  const current = projects[active];
 
   const go = useCallback((next: number) => setActive(((next % n) + n) % n), [n]);
 
-  // Decode the phrase: glyphs resolve left to right in ~0.5s. Direct text writes, no renders.
+  // Decode the accent line: glyphs resolve left to right in ~0.5s. Direct text writes.
   useEffect(() => {
     const el = phraseRef.current;
     if (!el) return;
-    const target = PHRASE[projects[active].slug].toUpperCase();
+    const target = ACCENT;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       el.textContent = target;
       return;
@@ -71,7 +65,7 @@ export default function HeroPress() {
       tick++;
       const shown = Math.floor((tick / steps) * target.length);
       el.textContent = Array.from(target, (ch, i) =>
-        i < shown || ch === " " || ch === "-" ? ch : SCRAMBLE[(Math.random() * SCRAMBLE.length) | 0],
+        i < shown || ch === " " || ch === "." ? ch : SCRAMBLE[(Math.random() * SCRAMBLE.length) | 0],
       ).join("");
       if (tick >= steps) {
         el.textContent = target;
@@ -164,20 +158,13 @@ export default function HeroPress() {
   return (
     <div ref={rootRef} className="press-block">
       {/* The statement, once, for screen readers; the animated copy is decorative. */}
-      <p className="sr-only">
-        I build software you can open: {projects.map((p) => `${p.name}, ${PHRASE[p.slug]}`).join("; ")}.
-      </p>
+      {/* The statement, once, for screen readers; the decoding copy is decorative. */}
+      <p className="sr-only">Less talk. More builds.</p>
 
       <div className="press-statement" aria-hidden="true">
-        <span className="press-line">I build</span>
-        <span className="press-line">
-          {/* Text written by the decode effect; React only renders the first phrase. */}
-          <span className="highlight press-phrase" ref={phraseRef}>
-            {PHRASE[projects[0].slug].toUpperCase()}
-          </span>
-        </span>
-        <span className="press-line press-tail">
-          you can <span key={current.live ? "open" : "read"} className="press-tail-word">{current.live ? "open" : "read"}</span>.
+        <span className="press-line">Less talk.</span>
+        <span className="press-line press-accent" ref={phraseRef}>
+          {ACCENT}
         </span>
       </div>
 
